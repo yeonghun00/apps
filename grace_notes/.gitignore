@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Security - Never commit these files!
+android/key.properties
+android/app/keystore/
+*.keystore
+*.jks
+keystore.base64
+google-play-service-account.json
+
+# Deployment artifacts
+*.aab
+*.apk
