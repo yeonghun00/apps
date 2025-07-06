@@ -1,9 +1,6 @@
-name: 🚀 Deploy Grace Note to Google Play Store
+name: Deploy Grace Note
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       track:
@@ -16,83 +13,37 @@ on:
         - alpha
         - beta
         - production
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  deploy:
-    name: 📱 Build & Deploy to Play Store
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📥 Checkout Repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: ☕ Setup Java 11
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '11'
 
-    - name: 🐦 Setup Flutter
+    - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.16.0'
         channel: 'stable'
-        cache: true
 
-    - name: 📦 Install Dependencies
+    - name: Install dependencies
       run: flutter pub get
 
-    - name: 🧪 Run Tests
+    - name: Run tests
       run: flutter test
 
-    - name: 🔍 Analyze Code
-      run: flutter analyze
+    - name: Build APK
+      run: flutter build apk --release
 
-    - name: 🔐 Setup Android Signing
-      env:
-        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-        SIGNING_KEY_STORE_BASE64: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
-      run: |
-        mkdir -p android/app/keystore
-        echo "$SIGNING_KEY_STORE_BASE64" | base64 -d > 
-android/app/keystore/release.keystore
-        cat > android/key.properties << EOF
-        storePassword=$SIGNING_STORE_PASSWORD
-        keyPassword=$SIGNING_KEY_PASSWORD
-        keyAlias=$SIGNING_KEY_ALIAS
-        storeFile=keystore/release.keystore
-        EOF
-
-    - name: 🔢 Auto-increment Version
-      run: |
-        CURRENT_VERSION=$(grep "version:" pubspec.yaml | cut -d ' ' -f 2)
-        VERSION_NUMBER=$(echo $CURRENT_VERSION | cut -d '+' -f 1)
-        BUILD_NUMBER=$(echo $CURRENT_VERSION | cut -d '+' -f 2)
-        NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
-        NEW_VERSION="${VERSION_NUMBER}+${NEW_BUILD_NUMBER}"
-        sed -i "s/version: .*/version: $NEW_VERSION/" pubspec.yaml
-        echo "🔢 Version updated to: $NEW_VERSION"
-        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-
-    - name: 🏗️ Build Android App Bundle (AAB)
-      run: |
-        flutter build appbundle --release \
-          --build-name=$(echo $NEW_VERSION | cut -d '+' -f 1) \
-          --build-number=$(echo $NEW_VERSION | cut -d '+' -f 2)
-          
-    - name: 🎉 Build Completed Successfully
-      run: |
-        echo "🎉 그레이스노트 앱 빌드가 성공적으로 완료되었습니다!"
-        echo "📱 Version: $NEW_VERSION"
-        echo "📦 AAB file: 
-build/app/outputs/bundle/release/app-release.aab"
-        ls -lh build/app/outputs/bundle/release/app-release.aab
-
-    - name: 🧹 Cleanup
-      if: always()
-      run: |
-        rm -f android/app/keystore/release.keystore
-        rm -f android/key.properties
-
+    - name: Build success
+      run: echo "Build completed successfully!"
