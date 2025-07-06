@@ -1,3 +1,4 @@
+
 name: Deploy Grace Note
 
 on:
@@ -28,16 +29,13 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '11'
+        java-version: '17'
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.16.0'
+        flutter-version: '3.24.0'
         channel: 'stable'
-
-    - name: Change to project directory
-      run: cd grace_notes
 
     - name: Install dependencies
       run: |
@@ -56,5 +54,6 @@ jobs:
 
     - name: Build success
       run: |
-        echo "Build completed successfully!"
+        echo "🎉 Build completed successfully!"
         ls -la grace_notes/build/app/outputs/flutter-apk/
+
