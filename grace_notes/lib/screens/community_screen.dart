@@ -437,55 +437,115 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Widget _buildEmptyState() {
     final categoryName = _getCategoryDisplayName(_selectedCategory);
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppTheme.mint.withOpacity(0.1),
-              shape: BoxShape.circle,
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppTheme.primaryPurple.withOpacity(0.8),
+                    AppTheme.lavender.withOpacity(0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryPurple.withOpacity(0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.favorite_border_rounded,
+                size: 40,
+                color: Colors.white,
+              ),
             ),
-            child: const Icon(
-              Icons.people_outline,
-              size: 64,
-              color: AppTheme.mint,
+            const SizedBox(height: 28),
+            Text(
+              _selectedCategory == null
+                  ? '함께 나누는 첫 번째 이야기를 시작해보세요 💜'
+                  : '$categoryName에서 첫 번째 이야기를 나눠보세요',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.textDark,
+                letterSpacing: -0.5,
+                height: 1.3,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            _selectedCategory == null
-                ? '아직 게시글이 없어요'
-                : '$categoryName 게시글이 없어요',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: AppTheme.textDark,
+            const SizedBox(height: 16),
+            Text(
+              _getEmptyStateMessage(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xFF6B7280),
+                height: 1.5,
+                fontWeight: FontWeight.w500,
+                letterSpacing: -0.1,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            '첫 번째 글을 작성해보세요!\n믿음의 자매들과 말씀을 나누어요 ✨',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppTheme.softGray,
+            const SizedBox(height: 36),
+            Container(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () => _showCreatePostDialog(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryPurple,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.edit_rounded, size: 22),
+                    SizedBox(width: 10),
+                    Text(
+                      '첫 번째 글 작성하기',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: () => _showCreatePostDialog(),
-            icon: const Icon(Icons.add),
-            label: const Text('글 작성하기'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.mint,
-              foregroundColor: AppTheme.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  String _getEmptyStateMessage() {
+    switch (_selectedCategory) {
+      case PostCategory.devotionSharing:
+        return '오늘 큐티에서 받은 은혜를\n자매들과 함께 나누어보세요';
+      case PostCategory.sermonSharing:
+        return '주일 설교에서 받은 감동을\n다른 분들께도 전해주세요';
+      case PostCategory.prayerRequest:
+        return '함께 기도해 줄 자매들이\n여기에서 기다리고 있어요';
+      case PostCategory.testimony:
+        return '하나님의 놀라운 역사하심을\n간증으로 나누어주세요';
+      case PostCategory.question:
+        return '궁금한 것이 있으시면\n언제든 편하게 물어보세요';
+      default:
+        return '서로의 믿음을 격려하고\n함께 성장해나가는 공간이에요';
+    }
   }
 
   Widget _buildPostCard(CommunityPost post) {
@@ -720,7 +780,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StreamBuilder<List<CommunityPost>>(
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: StreamBuilder<List<CommunityPost>>(
         stream: FirebaseCommunityService.getPostsStream(),
         builder: (context, snapshot) {
           // Find the current post in the stream data
@@ -733,8 +797,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
             currentPost = updatedPost;
           }
 
+          final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+          final screenHeight = MediaQuery.of(context).size.height;
+          final maxHeight = screenHeight * 0.9;
+          final minHeight = screenHeight * 0.5;
+          final dynamicHeight = (screenHeight * 0.8) - keyboardHeight;
+          
           return Container(
-            height: MediaQuery.of(context).size.height * 0.8,
+            height: dynamicHeight.clamp(minHeight, maxHeight),
             decoration: const BoxDecoration(
               color: AppTheme.white,
               borderRadius: BorderRadius.only(
@@ -968,6 +1038,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             ),
           );
         }
+        ),
       ),
     );
   }
@@ -1038,13 +1109,21 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 ),
               ),
               const Spacer(),
-              if (AuthService.currentUser?.email == comment.authorId)
+              // Check both uid and email for backward compatibility
+              if (AuthService.currentUser?.uid == comment.authorId || AuthService.currentUser?.email == comment.authorId)
                 GestureDetector(
                   onTap: () => _deleteComment(comment),
-                  child: const Icon(
-                    Icons.delete_outline,
-                    size: 16,
-                    color: Colors.red,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      size: 14,
+                      color: Colors.red.withOpacity(0.7),
+                    ),
                   ),
                 ),
             ],
@@ -1104,15 +1183,22 @@ class _CommunityScreenState extends State<CommunityScreen> {
     final commentController = TextEditingController();
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.white,
-        border: Border(
-          top: BorderSide(
-            color: AppTheme.softGray.withOpacity(0.3),
-            width: 1,
-          ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.primaryPurple.withOpacity(0.3),
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryPurple.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -1120,43 +1206,63 @@ class _CommunityScreenState extends State<CommunityScreen> {
             child: TextField(
               controller: commentController,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 color: AppTheme.textDark,
+                fontWeight: FontWeight.w500,
               ),
+              cursorColor: AppTheme.primaryPurple,
+              cursorWidth: 2.0,
+              cursorHeight: 20.0,
               decoration: InputDecoration(
                 hintText: '댓글을 입력하세요...',
-                hintStyle: TextStyle(
-                  color: AppTheme.softGray.withOpacity(0.7),
-                  fontSize: 14,
+                hintStyle: const TextStyle(
+                  color: AppTheme.softGray,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
                 ),
                 filled: true,
-                fillColor: AppTheme.cream,
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
-                    color: AppTheme.primaryPurple.withOpacity(0.3),
+                  borderSide: const BorderSide(
+                    color: AppTheme.primaryPurple,
+                    width: 1.5,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(
                     color: AppTheme.primaryPurple.withOpacity(0.3),
+                    width: 1.5,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: const BorderSide(
                     color: AppTheme.primaryPurple,
-                    width: 2,
+                    width: 2.5,
                   ),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+                  horizontal: 20,
+                  vertical: 16,
                 ),
               ),
               maxLines: null,
+              minLines: 1,
               textInputAction: TextInputAction.send,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              onTap: () {
+                // Ensure the input field scrolls into view when tapped
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  Scrollable.ensureVisible(
+                    context,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              },
               onSubmitted: (value) {
                 if (value.trim().isNotEmpty) {
                   _addComment(postId, value.trim());
@@ -1208,15 +1314,42 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Future<void> _deleteComment(Comment comment) async {
-    try {
-      await FirebaseCommunityService.deleteComment(comment.id, comment.postId);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('댓글 삭제 중 오류가 발생했습니다: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('댓글 삭제'),
+        content: const Text('정말로 이 댓글을 삭제하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('삭제'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      try {
+        await FirebaseCommunityService.deleteComment(comment.id, comment.postId);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('댓글이 삭제되었습니다'),
+            backgroundColor: AppTheme.sageGreen,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('댓글 삭제 중 오류가 발생했습니다: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
