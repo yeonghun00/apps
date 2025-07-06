@@ -77,11 +77,28 @@ class _StreakDisplayState extends State<StreakDisplay>
 
   Future<void> _loadStreakData() async {
     try {
+      // Calculate real streaks from actual notes
+      final devotionStreak = await _calculateDevotionStreak();
+      final sermonStreak = await _calculateSermonStreak();
+      
+      // Get best streaks from settings
       final settings = await StorageService.getSettings();
-      final devotionStreak = settings['devotionStreak'] ?? 0;
-      final sermonStreak = settings['sermonStreak'] ?? 0;
-      final bestDevotionStreak = settings['bestDevotionStreak'] ?? 0;
-      final bestSermonStreak = settings['bestSermonStreak'] ?? 0;
+      var bestDevotionStreak = settings['bestDevotionStreak'] ?? 0;
+      var bestSermonStreak = settings['bestSermonStreak'] ?? 0;
+      
+      // Update best streaks if current is higher
+      if (devotionStreak > bestDevotionStreak) {
+        bestDevotionStreak = devotionStreak;
+        settings['bestDevotionStreak'] = bestDevotionStreak;
+      }
+      
+      if (sermonStreak > bestSermonStreak) {
+        bestSermonStreak = sermonStreak;
+        settings['bestSermonStreak'] = bestSermonStreak;
+      }
+      
+      // Save updated settings
+      await StorageService.saveSettings(settings);
       
       setState(() {
         _devotionStreak = devotionStreak;
@@ -89,21 +106,102 @@ class _StreakDisplayState extends State<StreakDisplay>
         _bestDevotionStreak = bestDevotionStreak;
         _bestSermonStreak = bestSermonStreak;
         _isLoading = false;
-        
-        // TODO: Remove this demo data after testing
-        // Show demo streaks if no real data exists yet
-        if (_devotionStreak == 0 && _sermonStreak == 0) {
-          _devotionStreak = 5; // Demo: 5 day devotion streak
-          _sermonStreak = 3;   // Demo: 3 week sermon streak
-          _bestDevotionStreak = 7;
-          _bestSermonStreak = 4;
-        }
       });
     } catch (e) {
       print('Error loading streak data: $e');
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<int> _calculateDevotionStreak() async {
+    try {
+      final notes = await StorageService.getDevotionNotes();
+      if (notes.isEmpty) return 0;
+      
+      // Sort notes by date (newest first)
+      notes.sort((a, b) => b.date.compareTo(a.date));
+      
+      int streak = 0;
+      DateTime currentDate = DateTime.now();
+      DateTime compareDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+      
+      for (final note in notes) {
+        final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
+        
+        if (noteDate.isAtSameMomentAs(compareDate)) {
+          streak++;
+          compareDate = compareDate.subtract(const Duration(days: 1));
+        } else if (noteDate.isBefore(compareDate)) {
+          // If there's a gap, check if it's just one day (allow for missing today)
+          final daysDiff = compareDate.difference(noteDate).inDays;
+          if (daysDiff == 1 && streak == 0) {
+            // If we haven't started counting and today is missing, start from yesterday
+            streak++;
+            compareDate = noteDate.subtract(const Duration(days: 1));
+          } else {
+            break; // Streak is broken
+          }
+        }
+      }
+      
+      return streak;
+    } catch (e) {
+      print('Error calculating devotion streak: $e');
+      return 0;
+    }
+  }
+
+  Future<int> _calculateSermonStreak() async {
+    try {
+      final notes = await StorageService.getSermonNotes();
+      if (notes.isEmpty) return 0;
+      
+      // Sort notes by date (newest first)
+      notes.sort((a, b) => b.date.compareTo(a.date));
+      
+      int streak = 0;
+      DateTime currentDate = DateTime.now();
+      
+      // Find the most recent Sunday
+      DateTime currentSunday = currentDate;
+      while (currentSunday.weekday != 7) {
+        currentSunday = currentSunday.subtract(const Duration(days: 1));
+      }
+      
+      DateTime compareSunday = DateTime(currentSunday.year, currentSunday.month, currentSunday.day);
+      
+      for (final note in notes) {
+        final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
+        
+        // Check if note was written in the week of compareSunday
+        final weekStart = compareSunday.subtract(Duration(days: 6));
+        final weekEnd = compareSunday.add(const Duration(days: 1));
+        
+        if (noteDate.isAfter(weekStart) && noteDate.isBefore(weekEnd)) {
+          streak++;
+          compareSunday = compareSunday.subtract(const Duration(days: 7));
+        } else if (noteDate.isBefore(weekStart)) {
+          // Check if this note belongs to an earlier week
+          final weeksBack = ((weekStart.difference(noteDate).inDays) / 7).floor();
+          final expectedSunday = compareSunday.subtract(Duration(days: 7 * (weeksBack + 1)));
+          final expectedWeekStart = expectedSunday.subtract(const Duration(days: 6));
+          final expectedWeekEnd = expectedSunday.add(const Duration(days: 1));
+          
+          if (noteDate.isAfter(expectedWeekStart) && noteDate.isBefore(expectedWeekEnd)) {
+            streak++;
+            compareSunday = expectedSunday.subtract(const Duration(days: 7));
+          } else {
+            break; // Streak is broken
+          }
+        }
+      }
+      
+      return streak;
+    } catch (e) {
+      print('Error calculating sermon streak: $e');
+      return 0;
     }
   }
 
@@ -126,15 +224,15 @@ class _StreakDisplayState extends State<StreakDisplay>
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         children: [
-          // Devotion streak card with fancy animations
+          // Devotion streak card with subtle floating animations
           if (_devotionStreak > 0)
             AnimatedBuilder(
-              animation: Listenable.merge([_pulseAnimation, _floatingAnimation]),
+              animation: _floatingAnimation,
               builder: (context, child) {
                 return Transform.translate(
-                  offset: Offset(0, _floatingAnimation.value),
-                  child: Transform.scale(
-                    scale: _devotionStreak >= 3 ? _pulseAnimation.value : 1.0,
+                  offset: Offset(0, _floatingAnimation.value * 0.5),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 16),
                     child: _buildDevotionCard(),
                   ),
                 );
@@ -142,20 +240,14 @@ class _StreakDisplayState extends State<StreakDisplay>
             ).animate()
                 .fadeIn(duration: 500.ms, curve: Curves.easeOut),
           
-          if (_devotionStreak > 0 && _sermonStreak > 0)
-            const SizedBox(height: 12),
-          
-          // Sermon streak card with fancy animations
+          // Sermon streak card with subtle floating animations
           if (_sermonStreak > 0)
             AnimatedBuilder(
-              animation: Listenable.merge([_pulseAnimation, _floatingAnimation]),
+              animation: _floatingAnimation,
               builder: (context, child) {
                 return Transform.translate(
-                  offset: Offset(0, -_floatingAnimation.value * 0.7),
-                  child: Transform.scale(
-                    scale: _sermonStreak >= 2 ? _pulseAnimation.value : 1.0,
-                    child: _buildSermonCard(),
-                  ),
+                  offset: Offset(0, -_floatingAnimation.value * 0.3),
+                  child: _buildSermonCard(),
                 );
               },
             ).animate()

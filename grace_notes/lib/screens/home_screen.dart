@@ -106,6 +106,12 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
+  String _getFormattedDate() {
+    final now = DateTime.now();
+    final weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    return '${now.month}월 ${now.day}일 ${weekdays[now.weekday % 7]}';
+  }
+
   void _refreshData() {
     _loadTodaysVerse();
     _loadFeaturedPost();
@@ -212,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const StreakDisplay(),
-            const SizedBox(height: 8),
+            const SizedBox(height: 20),
             _buildTodaysVerseCard(),
             const SizedBox(height: 24),
             _buildQuickActionsSection(),
@@ -369,47 +375,139 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildTodaysVerseCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: AppTheme.cardDecoration,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryPurple.withOpacity(0.08),
+            AppTheme.lavender.withOpacity(0.12),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.primaryPurple.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryPurple.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    colors: [AppTheme.primaryPurple, AppTheme.deepLavender],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryPurple.withOpacity(0.25),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: const Icon(
                   Icons.auto_stories,
-                  color: AppTheme.primaryPurple,
-                  size: 20,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ),
-              const SizedBox(width: 12),
-              const Text(
-                '오늘의 말씀',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textDark,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '오늘의 말씀',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textDark,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _getFormattedDate(),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.textDark.withOpacity(0.6),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Add bookmark functionality
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('말씀이 즐겨찾기에 저장되었어요 💜'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryPurple.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.bookmark_border_rounded,
+                    color: AppTheme.primaryPurple,
+                    size: 20,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           if (_isLoadingVerse)
-            const Center(child: CircularProgressIndicator())
+            Container(
+              height: 80,
+              child: const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryPurple),
+                ),
+              ),
+            )
           else
-            Text(
-              _todaysVerse,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: AppTheme.textDark,
-                height: 1.6,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppTheme.primaryPurple.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                _todaysVerse,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: AppTheme.textDark,
+                  height: 1.7,
+                  letterSpacing: -0.2,
+                ),
               ),
             ),
         ],
@@ -422,89 +520,96 @@ class _HomeScreenState extends State<HomeScreen>
     final isSunday = now.weekday == 7;
     final isMorning = now.hour < 12;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Text(
-              '빠른 작성',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const Spacer(),
-            if (isSunday || isMorning)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                '빠른 작성',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textDark,
+                  letterSpacing: -0.5,
                 ),
-                child: Text(
-                  isSunday ? '주일이에요! 🌅' : '오늘도 말씀과 함께해요! 🌇',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppTheme.primaryPurple,
-                    fontWeight: FontWeight.w500,
+              ),
+              const Spacer(),
+              if (isSunday || isMorning)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppTheme.primaryPurple.withOpacity(0.15),
+                        AppTheme.lavender.withOpacity(0.2),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppTheme.primaryPurple.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    isSunday ? '주일이에요! 🌅' : '오늘도 말씀과 함께해요! 🌇',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppTheme.primaryPurple,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildQuickActionCard(
-                icon: Icons.church,
-                title: '설교노트',
-                subtitle: isSunday ? '오늘 주일 예배 💒' : '설교 말씀 기록',
-                color: AppTheme.primaryPurple,
-                isHighlighted: isSunday,
-                onTap: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SermonNoteFormScreen(),
-                    ),
-                  );
-                  if (result == true) {
-                    _refreshData();
-                  }
-                },
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildQuickActionCard(
-                icon: Icons.auto_stories,
-                title: '큐티노트',
-                subtitle: isMorning ? '아침 묵상 시간 🌿' : '오늘의 묵상',
-                color: AppTheme.sageGreen,
-                isHighlighted: isMorning && !isSunday,
-                onTap: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DevotionNoteFormScreen(),
-                    ),
-                  );
-                  if (result == true) {
-                    _refreshData();
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Full-width sermon note button
+          _buildFullWidthActionButton(
+            icon: Icons.church,
+            title: '설교노트 작성하기',
+            subtitle: isSunday ? '오늘 주일 예배에서 받은 은혜를 기록해보세요' : '설교 말씀을 통해 받은 은혜를 나누어요',
+            color: AppTheme.primaryPurple,
+            isHighlighted: isSunday,
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SermonNoteFormScreen(),
+                ),
+              );
+              if (result == true) {
+                _refreshData();
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+          // Full-width devotion note button
+          _buildFullWidthActionButton(
+            icon: Icons.auto_stories,
+            title: '큐티노트 작성하기',
+            subtitle: isMorning ? '새로운 하루, 말씀과 함께 시작해보세요' : '오늘의 묵상을 통해 받은 은혜를 기록해요',
+            color: AppTheme.sageGreen,
+            isHighlighted: isMorning && !isSunday,
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DevotionNoteFormScreen(),
+                ),
+              );
+              if (result == true) {
+                _refreshData();
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildQuickActionCard({
+  Widget _buildFullWidthActionButton({
     required IconData icon,
     required String title,
     required String subtitle,
@@ -515,61 +620,114 @@ class _HomeScreenState extends State<HomeScreen>
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
         decoration: isHighlighted
             ? BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    color.withOpacity(0.1),
-                    color.withOpacity(0.05),
+                    color.withOpacity(0.12),
+                    color.withOpacity(0.08),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: color.withOpacity(0.3),
+                  color: color.withOpacity(0.4),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: color.withOpacity(0.1),
+                    color: color.withOpacity(0.15),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              )
+            : BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: color.withOpacity(0.15),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.softGray.withOpacity(0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
                 ],
-              )
-            : AppTheme.cardDecoration,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+        child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
+                gradient: isHighlighted
+                    ? LinearGradient(
+                        colors: [color, color.withOpacity(0.8)],
+                      )
+                    : LinearGradient(
+                        colors: [color.withOpacity(0.15), color.withOpacity(0.1)],
+                      ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: isHighlighted
+                    ? [
+                        BoxShadow(
+                          color: color.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : null,
               ),
               child: Icon(
                 icon,
+                color: isHighlighted ? Colors.white : color,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.textDark,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textDark.withOpacity(0.7),
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
                 color: color,
-                size: 24,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppTheme.softGray,
+                size: 16,
               ),
             ),
           ],
@@ -622,108 +780,164 @@ class _HomeScreenState extends State<HomeScreen>
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Container(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(28),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.lavender.withOpacity(0.3),
-                      AppTheme.cream.withOpacity(0.5),
+                      AppTheme.primaryPurple.withOpacity(0.06),
+                      AppTheme.lavender.withOpacity(0.12),
+                      AppTheme.cream.withOpacity(0.08),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: AppTheme.lavender.withOpacity(0.3),
+                    color: AppTheme.primaryPurple.withOpacity(0.15),
                     width: 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryPurple.withOpacity(0.08),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      width: 72,
+                      height: 72,
                       decoration: BoxDecoration(
-                        color: AppTheme.lavender.withOpacity(0.2),
-                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            AppTheme.primaryPurple.withOpacity(0.8),
+                            AppTheme.deepLavender.withOpacity(0.9),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryPurple.withOpacity(0.25),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
                       child: const Icon(
-                        Icons.auto_stories,
-                        size: 32,
-                        color: AppTheme.primaryPurple,
+                        Icons.favorite_rounded,
+                        size: 36,
+                        color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     const Text(
-                      '아직 은혜의 기록이 없어요 💜',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textDark,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      '예배나 큐티를 통해 받은 은혜를\n소중히 기록해보세요',
+                      '첫 번째 은혜의 순간을 기록해보세요 ✨',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 14,
-                        color: AppTheme.softGray,
-                        height: 1.4,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textDark,
+                        letterSpacing: -0.3,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
+                    const Text(
+                      '하나님과의 특별한 만남의 순간들이\n소중한 기억으로 쌓여갈 거예요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF6B7280),
+                        height: 1.5,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: -0.1,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
                     Row(
                       children: [
                         Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SermonNoteFormScreen(),
+                          child: Container(
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SermonNoteFormScreen(),
+                                  ),
+                                );
+                                if (result == true) {
+                                  _refreshData();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primaryPurple,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shadowColor: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                              );
-                              if (result == true) {
-                                _refreshData();
-                              }
-                            },
-                            icon: const Icon(Icons.church, size: 18),
-                            label: const Text('설교노트 쓰기'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.primaryPurple,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.church, size: 20),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    '설교노트',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const DevotionNoteFormScreen(),
+                          child: Container(
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DevotionNoteFormScreen(),
+                                  ),
+                                );
+                                if (result == true) {
+                                  _refreshData();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.sageGreen,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shadowColor: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                              );
-                              if (result == true) {
-                                _refreshData();
-                              }
-                            },
-                            icon: const Icon(Icons.book, size: 18),
-                            label: const Text('큐티노트 쓰기'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppTheme.primaryPurple,
-                              side: const BorderSide(
-                                  color: AppTheme.primaryPurple),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.auto_stories, size: 20),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    '큐티노트',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

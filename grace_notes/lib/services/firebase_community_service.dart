@@ -299,7 +299,7 @@ class FirebaseCommunityService {
 
       final comment = Comment(
         postId: postId,
-        authorId: user.email, // Use email as consistent identifier
+        authorId: user.uid, // Use uid as consistent identifier
         authorName: user.displayName,
         content: content,
       );
@@ -337,7 +337,9 @@ class FirebaseCommunityService {
       }
 
       final commentData = doc.data()!;
-      if (commentData['authorId'] != user.uid) {
+      // Check both uid and email for backward compatibility
+      final authorId = commentData['authorId'];
+      if (authorId != user.uid && authorId != user.email) {
         throw Exception('댓글을 삭제할 권한이 없습니다.');
       }
 
