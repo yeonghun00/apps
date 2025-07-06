@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1090241694132",
+    "project_id": "grace-notes-98ebe",
+    "storage_bucket": "grace-notes-98ebe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090241694132:android:6ff78b43edee372150cae1",
+        "android_client_info": {
+          "package_name": "com.thousandemfla.grace_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090241694132-604fsnt89g6u0llhjkj495sjhl976c24.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thousandemfla.grace_notes",
+            "certificate_hash": "83cfffb5e02f0de5e89a92dea754ba456488794f"
+          }
+        },
+        {
+          "client_id": "1090241694132-cu1bv8ov8g44gaiklti5q8reg0s8guqt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu8N7lyVgzUAtirM8ZgQXdr-mQJhbYcMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090241694132-cu1bv8ov8g44gaiklti5q8reg0s8guqt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

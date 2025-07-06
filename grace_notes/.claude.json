@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "firebase": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-firebase"],
+      "env": {
+        "FIREBASE_PROJECT_ID": "grace-notes-app"
+      }
+    }
+  }
+}
