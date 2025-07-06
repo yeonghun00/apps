@@ -36,14 +36,25 @@ jobs:
         flutter-version: '3.16.0'
         channel: 'stable'
 
+    - name: Change to project directory
+      run: cd grace_notes
+
     - name: Install dependencies
-      run: flutter pub get
+      run: |
+        cd grace_notes
+        flutter pub get
 
     - name: Run tests
-      run: flutter test
+      run: |
+        cd grace_notes
+        flutter test
 
     - name: Build APK
-      run: flutter build apk --release
+      run: |
+        cd grace_notes
+        flutter build apk --release
 
     - name: Build success
-      run: echo "Build completed successfully!"
+      run: |
+        echo "Build completed successfully!"
+        ls -la grace_notes/build/app/outputs/flutter-apk/
