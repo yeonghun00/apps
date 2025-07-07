@@ -11,7 +11,7 @@ class AppTheme {
   static const Color softGray = Color(0xFF8B8B8B);
   static const Color white = Color(0xFFFFFFFF);
   static const Color textDark = Color(0xFF2C2C2C);
-  
+
   // High visibility colors for better contrast
   static const Color darkPurple = Color(0xFF7B2D8E);
   static const Color darkGreen = Color(0xFF4A6741);
@@ -44,7 +44,7 @@ class AppTheme {
       onSecondary: textDark,
       onSurface: textDark,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: white,
       elevation: 4,
       shadowColor: softGray.withOpacity(0.2),

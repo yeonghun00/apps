@@ -135,18 +135,19 @@ jobs:
         # Create service account key file
         echo "$PLAY_STORE_SERVICE_ACCOUNT_JSON" > service-account-key.json
         
-        # Set up fastlane for Play Store deployment
+        # Install fastlane
         sudo gem install fastlane
         
-        # Create fastlane directory and Appfile
+        # Create fastlane directory and configuration
         mkdir -p android/fastlane
         
+        # Create Appfile
         cat > android/fastlane/Appfile << EOF
         json_key_file("../service-account-key.json")
         package_name("com.thousandemfla.grace_notes")
         EOF
         
-        # Create Fastfile
+        # Create Fastfile with full automation
         cat > android/fastlane/Fastfile << EOF
         default_platform(:android)
 
@@ -157,10 +158,11 @@ jobs:
               track: '${{ github.event.inputs.track || 'internal' }}',
               aab: '../build/app/outputs/bundle/release/app-release.aab',
               skip_upload_apk: true,
-              skip_upload_metadata: true,
+              skip_upload_metadata: false,
               skip_upload_images: true,
               skip_upload_screenshots: true,
-              release_status: 'draft'
+              release_status: '${{ github.event.inputs.track == 'production' && 'completed' || 'draft' }}',
+              rollout_percentage: '${{ github.event.inputs.track == 'production' && '100' || null }}'
             )
           end
         end
@@ -171,15 +173,27 @@ jobs:
         fastlane deploy
         
     # 🎉 Deployment Success
-    - name: 🎉 Deployment Completed Successfully
+    - name: 🎉 Deployment Success Notification
       run: |
         echo "🎉 그레이스노트 앱이 Google Play Store에 성공적으로 업로드되었습니다!"
         echo "📱 Version: $NEW_VERSION"
         echo "🏪 Track: ${{ github.event.inputs.track || 'internal' }}"
-        echo "📦 AAB file: build/app/outputs/bundle/release/app-release.aab"
+        echo "📦 Release Status: ${{ github.event.inputs.track == 'production' && 'Live in Production' || 'Draft' }}"
+        echo "🔗 Check your Play Console: https://play.google.com/console"
         
-        # Show file size
+        # Show file info
         ls -lh build/app/outputs/bundle/release/app-release.aab
+        
+    # 📤 Backup Build Artifacts
+    - name: 📤 Backup Build Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: grace-notes-release-${{ env.NEW_VERSION }}
+        path: |
+          build/app/outputs/bundle/release/app-release.aab
+          android/app/src/main/play/release-notes/ko-KR/default.txt
+        retention-days: 90
         
     # 🧹 Cleanup
     - name: 🧹 Cleanup
