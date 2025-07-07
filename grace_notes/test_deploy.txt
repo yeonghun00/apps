@@ -1,2 +1,0 @@
-# Test deployment trigger
-# Trigger GitHub Actions refresh
