@@ -51,15 +51,21 @@ jobs:
         
     # 📦 Get dependencies
     - name: 📦 Install Dependencies
-      run: flutter pub get
+      run: |
+        cd grace_notes
+        flutter pub get
       
     # 🧪 Run tests
     - name: 🧪 Run Tests
-      run: flutter test
+      run: |
+        cd grace_notes
+        flutter test
       
     # 🔍 Analyze code
     - name: 🔍 Analyze Code
-      run: flutter analyze
+      run: |
+        cd grace_notes
+        flutter analyze
       
     # 🔐 Setup Android Signing
     - name: 🔐 Setup Android Signing
@@ -69,6 +75,8 @@ jobs:
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         SIGNING_KEY_STORE_BASE64: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
       run: |
+        cd grace_notes
+        
         # Create keystore directory
         mkdir -p android/app/keystore
         
@@ -86,6 +94,8 @@ jobs:
     # 🔢 Auto-increment version
     - name: 🔢 Auto-increment Version
       run: |
+        cd grace_notes
+        
         # Get current version from pubspec.yaml
         CURRENT_VERSION=$(grep "version:" pubspec.yaml | cut -d ' ' -f 2)
         
@@ -106,6 +116,7 @@ jobs:
     # 🏗️ Build Android App Bundle
     - name: 🏗️ Build Android App Bundle (AAB)
       run: |
+        cd grace_notes
         flutter build appbundle --release \
           --build-name=$(echo $NEW_VERSION | cut -d '+' -f 1) \
           --build-number=$(echo $NEW_VERSION | cut -d '+' -f 2)
@@ -113,6 +124,7 @@ jobs:
     # 📊 Generate What's New
     - name: 📊 Generate Release Notes
       run: |
+        cd grace_notes
         mkdir -p android/app/src/main/play/release-notes/ko-KR
         cat > android/app/src/main/play/release-notes/ko-KR/default.txt << EOF
         🙏 그레이스노트 업데이트
@@ -130,6 +142,7 @@ jobs:
     # 🎉 Build Success (skip Play Store upload for now)
     - name: 🎉 Build Completed Successfully
       run: |
+        cd grace_notes
         echo "🎉 그레이스노트 앱 빌드가 성공적으로 완료되었습니다!"
         echo "📱 Version: $NEW_VERSION"
         echo "📦 AAB file: build/app/outputs/bundle/release/app-release.aab"
@@ -141,5 +154,6 @@ jobs:
     - name: 🧹 Cleanup
       if: always()
       run: |
+        cd grace_notes
         rm -f android/app/keystore/release.keystore
         rm -f android/key.properties
