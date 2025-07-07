@@ -767,10 +767,15 @@ class _CommunityScreenState extends State<CommunityScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _CreatePostDialog(
-        onPostCreated: () {
-          // Posts will automatically update via stream
-        },
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: _CreatePostDialog(
+          onPostCreated: () {
+            // Posts will automatically update via stream
+          },
+        ),
       ),
     );
   }
@@ -1453,8 +1458,12 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final availableHeight = screenHeight - keyboardHeight;
+    
     return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: availableHeight * 0.9,
       decoration: const BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.only(
@@ -1501,7 +1510,13 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
             child: Form(
               key: _formKey,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 16,
+                  bottom: 16 + MediaQuery.of(context).viewInsets.bottom * 0.1,
+                ),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

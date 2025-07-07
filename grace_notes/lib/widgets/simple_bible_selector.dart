@@ -423,6 +423,19 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
               alignLabelWithHint: true,
             ),
             maxLines: 4,
+            onTap: () {
+              // Ensure the input field scrolls into view when tapped
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (mounted) {
+                  Scrollable.ensureVisible(
+                    context,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    alignment: 0.5, // Center the field in the viewport
+                  );
+                }
+              });
+            },
             onChanged: (value) {
               widget.onSelected(_referenceController.text, value);
             },

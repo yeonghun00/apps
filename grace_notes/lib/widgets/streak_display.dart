@@ -19,7 +19,7 @@ class _StreakDisplayState extends State<StreakDisplay>
   late Animation<double> _pulseAnimation;
   late Animation<double> _sparkleAnimation;
   late Animation<double> _floatingAnimation;
-  
+
   int _devotionStreak = 0;
   int _sermonStreak = 0;
   int _bestDevotionStreak = 0;
@@ -29,34 +29,34 @@ class _StreakDisplayState extends State<StreakDisplay>
   @override
   void initState() {
     super.initState();
-    
+
     _pulseController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
     );
-    
+
     _sparkleController = AnimationController(
       duration: const Duration(seconds: 4),
       vsync: this,
     );
-    
+
     _floatingController = AnimationController(
       duration: const Duration(seconds: 6),
       vsync: this,
     );
-    
+
     _pulseAnimation = Tween<double>(begin: 0.98, end: 1.02).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    
+
     _sparkleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _sparkleController, curve: Curves.easeInOut),
     );
-    
+
     _floatingAnimation = Tween<double>(begin: -3.0, end: 3.0).animate(
       CurvedAnimation(parent: _floatingController, curve: Curves.easeInOut),
     );
-    
+
     _loadStreakData();
     _startAnimations();
   }
@@ -80,26 +80,26 @@ class _StreakDisplayState extends State<StreakDisplay>
       // Calculate real streaks from actual notes
       final devotionStreak = await _calculateDevotionStreak();
       final sermonStreak = await _calculateSermonStreak();
-      
+
       // Get best streaks from settings
       final settings = await StorageService.getSettings();
       var bestDevotionStreak = settings['bestDevotionStreak'] ?? 0;
       var bestSermonStreak = settings['bestSermonStreak'] ?? 0;
-      
+
       // Update best streaks if current is higher
       if (devotionStreak > bestDevotionStreak) {
         bestDevotionStreak = devotionStreak;
         settings['bestDevotionStreak'] = bestDevotionStreak;
       }
-      
+
       if (sermonStreak > bestSermonStreak) {
         bestSermonStreak = sermonStreak;
         settings['bestSermonStreak'] = bestSermonStreak;
       }
-      
+
       // Save updated settings
       await StorageService.saveSettings(settings);
-      
+
       setState(() {
         _devotionStreak = devotionStreak;
         _sermonStreak = sermonStreak;
@@ -119,17 +119,19 @@ class _StreakDisplayState extends State<StreakDisplay>
     try {
       final notes = await StorageService.getDevotionNotes();
       if (notes.isEmpty) return 0;
-      
+
       // Sort notes by date (newest first)
       notes.sort((a, b) => b.date.compareTo(a.date));
-      
+
       int streak = 0;
       DateTime currentDate = DateTime.now();
-      DateTime compareDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
-      
+      DateTime compareDate =
+          DateTime(currentDate.year, currentDate.month, currentDate.day);
+
       for (final note in notes) {
-        final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
-        
+        final noteDate =
+            DateTime(note.date.year, note.date.month, note.date.day);
+
         if (noteDate.isAtSameMomentAs(compareDate)) {
           streak++;
           compareDate = compareDate.subtract(const Duration(days: 1));
@@ -145,7 +147,7 @@ class _StreakDisplayState extends State<StreakDisplay>
           }
         }
       }
-      
+
       return streak;
     } catch (e) {
       print('Error calculating devotion streak: $e');
@@ -157,47 +159,38 @@ class _StreakDisplayState extends State<StreakDisplay>
     try {
       final notes = await StorageService.getSermonNotes();
       if (notes.isEmpty) return 0;
-      
+
       // Sort notes by date (newest first)
       notes.sort((a, b) => b.date.compareTo(a.date));
-      
+
       int streak = 0;
-      DateTime currentDate = DateTime.now();
-      
-      // Find the most recent Sunday
-      DateTime currentSunday = currentDate;
-      while (currentSunday.weekday != 7) {
-        currentSunday = currentSunday.subtract(const Duration(days: 1));
-      }
-      
-      DateTime compareSunday = DateTime(currentSunday.year, currentSunday.month, currentSunday.day);
-      
-      for (final note in notes) {
-        final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
+      DateTime now = DateTime.now();
+      DateTime currentWeekStart = now.subtract(Duration(days: now.weekday % 7));
+
+      // Check each week going backwards
+      for (int weekOffset = 0; weekOffset < 52; weekOffset++) {
+        DateTime weekStart = currentWeekStart.subtract(Duration(days: weekOffset * 7));
+        DateTime weekEnd = weekStart.add(const Duration(days: 6));
         
-        // Check if note was written in the week of compareSunday
-        final weekStart = compareSunday.subtract(Duration(days: 6));
-        final weekEnd = compareSunday.add(const Duration(days: 1));
+        bool hasNoteThisWeek = false;
         
-        if (noteDate.isAfter(weekStart) && noteDate.isBefore(weekEnd)) {
-          streak++;
-          compareSunday = compareSunday.subtract(const Duration(days: 7));
-        } else if (noteDate.isBefore(weekStart)) {
-          // Check if this note belongs to an earlier week
-          final weeksBack = ((weekStart.difference(noteDate).inDays) / 7).floor();
-          final expectedSunday = compareSunday.subtract(Duration(days: 7 * (weeksBack + 1)));
-          final expectedWeekStart = expectedSunday.subtract(const Duration(days: 6));
-          final expectedWeekEnd = expectedSunday.add(const Duration(days: 1));
+        for (final note in notes) {
+          final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
           
-          if (noteDate.isAfter(expectedWeekStart) && noteDate.isBefore(expectedWeekEnd)) {
-            streak++;
-            compareSunday = expectedSunday.subtract(const Duration(days: 7));
-          } else {
-            break; // Streak is broken
+          if ((noteDate.isAfter(weekStart) || noteDate.isAtSameMomentAs(weekStart)) &&
+              (noteDate.isBefore(weekEnd) || noteDate.isAtSameMomentAs(weekEnd))) {
+            hasNoteThisWeek = true;
+            break;
           }
         }
+        
+        if (hasNoteThisWeek) {
+          streak++;
+        } else {
+          break; // Streak broken
+        }
       }
-      
+
       return streak;
     } catch (e) {
       print('Error calculating sermon streak: $e');
@@ -216,8 +209,7 @@ class _StreakDisplayState extends State<StreakDisplay>
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: _buildMotivationalStarter(),
-      ).animate()
-          .fadeIn(duration: 600.ms, curve: Curves.easeOut);
+      ).animate().fadeIn(duration: 600.ms, curve: Curves.easeOut);
     }
 
     return Container(
@@ -237,9 +229,8 @@ class _StreakDisplayState extends State<StreakDisplay>
                   ),
                 );
               },
-            ).animate()
-                .fadeIn(duration: 500.ms, curve: Curves.easeOut),
-          
+            ).animate().fadeIn(duration: 500.ms, curve: Curves.easeOut),
+
           // Sermon streak card with subtle floating animations
           if (_sermonStreak > 0)
             AnimatedBuilder(
@@ -250,8 +241,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                   child: _buildSermonCard(),
                 );
               },
-            ).animate()
-                .fadeIn(duration: 500.ms, curve: Curves.easeOut),
+            ).animate().fadeIn(duration: 500.ms, curve: Curves.easeOut),
         ],
       ),
     );
@@ -323,7 +313,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '큐티와 설교노트를 꾸준히 작성하면\n아름다운 연속 기록이 표시됩니다 💜',
+                      '큐티와 설교노트를 꾸준히 작성해보세요 💜',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppTheme.textDark.withOpacity(0.8),
@@ -408,10 +398,12 @@ class _StreakDisplayState extends State<StreakDisplay>
                             color: Colors.white,
                           ),
                         ),
-                        if (_devotionStreak == _bestDevotionStreak && _bestDevotionStreak > 1) ...[ 
+                        if (_devotionStreak == _bestDevotionStreak &&
+                            _bestDevotionStreak > 1) ...[
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
@@ -537,10 +529,12 @@ class _StreakDisplayState extends State<StreakDisplay>
                             color: Colors.white,
                           ),
                         ),
-                        if (_sermonStreak == _bestSermonStreak && _bestSermonStreak > 1) ...[ 
+                        if (_sermonStreak == _bestSermonStreak &&
+                            _bestSermonStreak > 1) ...[
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
@@ -612,7 +606,6 @@ class _StreakDisplayState extends State<StreakDisplay>
     );
   }
 
-
   Widget _buildFloatingParticles() {
     return AnimatedBuilder(
       animation: _floatingController,
@@ -628,11 +621,17 @@ class _StreakDisplayState extends State<StreakDisplay>
 
   List<Color> _getDevotionGradientColors() {
     if (_devotionStreak >= 30) {
-      return [const Color(0xFF4facfe), const Color(0xFF00f2fe)]; // Blue for 30+ days
+      return [
+        const Color(0xFF4facfe),
+        const Color(0xFF00f2fe)
+      ]; // Blue for 30+ days
     } else if (_devotionStreak >= 14) {
       return [AppTheme.sageGreen, AppTheme.mint]; // Green for 14+ days
     } else if (_devotionStreak >= 7) {
-      return [const Color(0xFF667eea), const Color(0xFF764ba2)]; // Purple for 7+ days
+      return [
+        const Color(0xFF667eea),
+        const Color(0xFF764ba2)
+      ]; // Purple for 7+ days
     } else if (_devotionStreak >= 3) {
       return [AppTheme.mint, AppTheme.sageGreen]; // Light green for 3+ days
     } else {
@@ -644,7 +643,10 @@ class _StreakDisplayState extends State<StreakDisplay>
     if (_sermonStreak >= 12) {
       return [AppTheme.coral, const Color(0xFFFF6B9D)]; // Coral for 12+ weeks
     } else if (_sermonStreak >= 8) {
-      return [const Color(0xFFf093fb), const Color(0xFff5576c)]; // Pink for 8+ weeks
+      return [
+        const Color(0xFFf093fb),
+        const Color(0xFff5576c)
+      ]; // Pink for 8+ weeks
     } else if (_sermonStreak >= 4) {
       return [AppTheme.primaryPurple, AppTheme.lavender]; // Purple for 4+ weeks
     } else {
@@ -707,11 +709,12 @@ class SparklePainter extends CustomPainter {
     for (int i = 0; i < sparkles.length; i++) {
       final offset = sparkles[i];
       final phase = (animationValue + i * 0.15) % 1.0;
-      final opacity = (math.sin(phase * math.pi * 2) * 0.5 + 0.5).clamp(0.0, 1.0);
+      final opacity =
+          (math.sin(phase * math.pi * 2) * 0.5 + 0.5).clamp(0.0, 1.0);
       final sparkleSize = 4.0 * opacity;
 
       paint.color = Colors.white.withOpacity(opacity * 0.9);
-      
+
       // Draw star-shaped sparkles
       _drawStar(canvas, offset, sparkleSize, paint);
     }
@@ -720,18 +723,18 @@ class SparklePainter extends CustomPainter {
   void _drawStar(Canvas canvas, Offset center, double size, Paint paint) {
     final path = Path();
     const double angle = math.pi / 4;
-    
+
     for (int i = 0; i < 8; i++) {
       final x = center.dx + size * math.cos(i * angle);
       final y = center.dy + size * math.sin(i * angle);
-      
+
       if (i == 0) {
         path.moveTo(x, y);
       } else {
         path.lineTo(x, y);
       }
     }
-    
+
     path.close();
     canvas.drawPath(path, paint);
   }
@@ -739,7 +742,6 @@ class SparklePainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
-
 
 class FloatingParticlesPainter extends CustomPainter {
   final double animationValue;
@@ -770,7 +772,7 @@ class FloatingParticlesPainter extends CustomPainter {
       final particleSize = 3.0 + math.sin(phase * math.pi * 2) * 2;
 
       paint.color = AppTheme.primaryPurple.withOpacity(opacity);
-      
+
       canvas.drawCircle(
         Offset(offset.dx, offset.dy + floatY),
         particleSize,
