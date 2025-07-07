@@ -127,11 +127,55 @@ jobs:
         📱 더 나은 사용자 경험을 위한 UI/UX 개선
         EOF
         
-    # 🎉 Build Success (skip Play Store upload for now)
-    - name: 🎉 Build Completed Successfully
+    # 🚀 Deploy to Google Play Store
+    - name: 🚀 Deploy to Google Play Store
+      env:
+        PLAY_STORE_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
       run: |
-        echo "🎉 그레이스노트 앱 빌드가 성공적으로 완료되었습니다!"
+        # Create service account key file
+        echo "$PLAY_STORE_SERVICE_ACCOUNT_JSON" > service-account-key.json
+        
+        # Set up fastlane for Play Store deployment
+        sudo gem install fastlane
+        
+        # Create fastlane directory and Appfile
+        mkdir -p android/fastlane
+        
+        cat > android/fastlane/Appfile << EOF
+        json_key_file("../service-account-key.json")
+        package_name("com.thousandemfla.grace_notes")
+        EOF
+        
+        # Create Fastfile
+        cat > android/fastlane/Fastfile << EOF
+        default_platform(:android)
+
+        platform :android do
+          desc "Deploy to Google Play Store"
+          lane :deploy do
+            upload_to_play_store(
+              track: '${{ github.event.inputs.track || 'internal' }}',
+              aab: '../build/app/outputs/bundle/release/app-release.aab',
+              skip_upload_apk: true,
+              skip_upload_metadata: true,
+              skip_upload_images: true,
+              skip_upload_screenshots: true,
+              release_status: 'draft'
+            )
+          end
+        end
+        EOF
+        
+        # Deploy to Play Store
+        cd android
+        fastlane deploy
+        
+    # 🎉 Deployment Success
+    - name: 🎉 Deployment Completed Successfully
+      run: |
+        echo "🎉 그레이스노트 앱이 Google Play Store에 성공적으로 업로드되었습니다!"
         echo "📱 Version: $NEW_VERSION"
+        echo "🏪 Track: ${{ github.event.inputs.track || 'internal' }}"
         echo "📦 AAB file: build/app/outputs/bundle/release/app-release.aab"
         
         # Show file size
@@ -143,3 +187,4 @@ jobs:
       run: |
         rm -f android/app/keystore/release.keystore
         rm -f android/key.properties
+        rm -f service-account-key.json
