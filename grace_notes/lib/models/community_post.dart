@@ -6,6 +6,7 @@ enum PostCategory {
   prayerRequest,
   testimony,
   question,
+  faithSharing,
 }
 
 class CommunityPost {
@@ -109,6 +110,8 @@ class CommunityPost {
 
   String get categoryDisplayName {
     switch (category) {
+      case PostCategory.faithSharing:
+        return '신앙나눔';
       case PostCategory.devotionSharing:
         return '큐티나눔';
       case PostCategory.sermonSharing:

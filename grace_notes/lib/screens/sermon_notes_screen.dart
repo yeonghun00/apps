@@ -221,7 +221,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               builder: (context) => const SermonNoteFormScreen(),
             ),
           );
-          if (result == true) {
+          if (result != null) {
             _loadNotes();
           }
         },
@@ -1415,7 +1415,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                                         SermonNoteFormScreen(note: note),
                                   ),
                                 );
-                                if (result == true) {
+                                if (result != null) {
                                   _loadNotes();
                                 }
                               },

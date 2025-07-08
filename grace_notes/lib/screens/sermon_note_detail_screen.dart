@@ -4,6 +4,7 @@ import '../constants/app_theme.dart';
 import '../models/sermon_note.dart';
 import '../services/storage_service.dart';
 import 'sermon_note_form_screen.dart';
+import 'main_screen.dart';
 
 class SermonNoteDetailScreen extends StatefulWidget {
   final SermonNote note;
@@ -19,6 +20,7 @@ class SermonNoteDetailScreen extends StatefulWidget {
 
 class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
   late SermonNote _note;
+  bool _wasUpdated = false;
 
   @override
   void initState() {
@@ -28,72 +30,90 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.ivory,
-      appBar: AppBar(
-        title: const Text(
-          '설교노트',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppTheme.textDark,
-          ),
-        ),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          // Handle back button press
+          if (_wasUpdated) {
+            MainScreen.of(context)?.refreshCurrentScreen();
+          }
+          Navigator.pop(context, _wasUpdated);
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppTheme.ivory,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppTheme.textDark),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: AppTheme.primaryPurple),
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SermonNoteFormScreen(note: _note),
-                ),
-              );
-              if (result != null) {
-                setState(() {
-                  _note = result;
-                });
+        appBar: AppBar(
+          title: const Text(
+            '설교노트',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textDark,
+            ),
+          ),
+          backgroundColor: AppTheme.ivory,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppTheme.textDark),
+            onPressed: () {
+              if (_wasUpdated) {
+                MainScreen.of(context)?.refreshCurrentScreen();
               }
+              Navigator.pop(context, _wasUpdated);
             },
           ),
-          PopupMenuButton(
-            icon: const Icon(Icons.more_vert, color: AppTheme.textDark),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: const Row(
-                  children: [
-                    Icon(Icons.delete, color: Colors.red, size: 20),
-                    SizedBox(width: 8),
-                    Text('삭제'),
-                  ],
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit, color: AppTheme.primaryPurple),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SermonNoteFormScreen(note: _note),
+                  ),
+                );
+                if (result != null && result is SermonNote) {
+                  setState(() {
+                    _note = result;
+                    _wasUpdated = true; // Mark as updated
+                  });
+                }
+              },
+            ),
+            PopupMenuButton(
+              icon: const Icon(Icons.more_vert, color: AppTheme.textDark),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: const Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.red, size: 20),
+                      SizedBox(width: 8),
+                      Text('삭제'),
+                    ],
+                  ),
+                  onTap: () => _deleteNote(),
                 ),
-                onTap: () => _deleteNote(),
-              ),
+              ],
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              const SizedBox(height: 24),
+              _buildScripture(),
+              const SizedBox(height: 24),
+              _buildSermonContent(),
+              const SizedBox(height: 24),
+              _buildReflection(),
+              const SizedBox(height: 24),
+              _buildPrayerRequest(),
             ],
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 24),
-            _buildScripture(),
-            const SizedBox(height: 24),
-            _buildSermonContent(),
-            const SizedBox(height: 24),
-            _buildReflection(),
-            const SizedBox(height: 24),
-            _buildPrayerRequest(),
-          ],
         ),
       ),
     );
@@ -420,6 +440,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
             onPressed: () async {
               await StorageService.deleteSermonNote(_note.id);
               Navigator.pop(context); // Close dialog
+              MainScreen.of(context)?.refreshCurrentScreen();
               Navigator.pop(context, true); // Return to previous screen
             },
             child: const Text('삭제', style: TextStyle(color: Colors.red)),

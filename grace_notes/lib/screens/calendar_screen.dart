@@ -17,12 +17,13 @@ class CalendarScreen extends StatefulWidget {
   State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObserver {
+class _CalendarScreenState extends State<CalendarScreen>
+    with WidgetsBindingObserver {
   late final ValueNotifier<List<dynamic>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  
+
   List<SermonNote> _sermonNotes = [];
   List<DevotionNote> _devotionNotes = [];
   bool _isLoading = true;
@@ -50,22 +51,42 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
     }
   }
 
+  @override
+  void didUpdateWidget(CalendarScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Always reload when widget updates (e.g., when MainScreen refreshes)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotes();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload when dependencies change
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotes();
+    });
+  }
+
   Future<void> _loadNotes() async {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final sermonNotes = await StorageService.getSermonNotes();
       final devotionNotes = await StorageService.getDevotionNotes();
-      
+
       setState(() {
         _sermonNotes = sermonNotes;
         _devotionNotes = devotionNotes;
         _isLoading = false;
       });
-      
-      _selectedEvents.value = _getEventsForDay(_selectedDay!);
+
+      // Force update the selected events with fresh data
+      final newEvents = _getEventsForDay(_selectedDay!);
+      _selectedEvents.value = List.from(newEvents);
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -75,21 +96,21 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
 
   List<dynamic> _getEventsForDay(DateTime day) {
     final events = <dynamic>[];
-    
+
     // Add sermon notes for this day
     for (final note in _sermonNotes) {
       if (isSameDay(note.date, day)) {
         events.add(note);
       }
     }
-    
+
     // Add devotion notes for this day
     for (final note in _devotionNotes) {
       if (isSameDay(note.date, day)) {
         events.add(note);
       }
     }
-    
+
     return events;
   }
 
@@ -112,18 +133,6 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
         ),
         backgroundColor: AppTheme.ivory,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.today),
-            onPressed: () {
-              setState(() {
-                _focusedDay = DateTime.now();
-                _selectedDay = DateTime.now();
-              });
-              _selectedEvents.value = _getEventsForDay(_selectedDay!);
-            },
-          ),
-        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -230,7 +239,7 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
         calendarBuilders: CalendarBuilders(
           markerBuilder: (context, day, events) {
             if (events.isEmpty) return null;
-            
+
             return Positioned(
               bottom: 1,
               child: Row(
@@ -242,7 +251,7 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
                   } else if (event is DevotionNote) {
                     color = AppTheme.sageGreen;
                   }
-                  
+
                   return Container(
                     width: 6,
                     height: 6,
@@ -299,7 +308,7 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
               ),
               const SizedBox(height: 16),
               Text(
-                '${DateFormat('M월 d일').format(_selectedDay!)}',
+                DateFormat('M월 d일').format(_selectedDay!),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -353,7 +362,8 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
                         final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DevotionNoteFormScreen(),
+                            builder: (context) =>
+                                const DevotionNoteFormScreen(),
                           ),
                         );
                         if (result == true) {
@@ -384,17 +394,18 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
     }
 
     return ListView.builder(
+      key: ValueKey('events_${events.length}_${events.hashCode}'),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
-        
+
         if (event is SermonNote) {
           return _buildSermonNoteCard(event);
         } else if (event is DevotionNote) {
           return _buildDevotionNoteCard(event);
         }
-        
+
         return const SizedBox.shrink();
       },
     );
@@ -402,6 +413,8 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
 
   Widget _buildSermonNoteCard(SermonNote note) {
     return GestureDetector(
+      key: ValueKey(
+          'sermon_${note.id}_${note.updatedAt.millisecondsSinceEpoch}'),
       onTap: () async {
         final result = await Navigator.push(
           context,
@@ -409,10 +422,8 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
             builder: (context) => SermonNoteDetailScreen(note: note),
           ),
         );
-        if (result == true) {
-          // Note was deleted, refresh the calendar
-          _loadNotes();
-        }
+        // Always refresh calendar when returning from detail screen
+        _loadNotes();
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -472,7 +483,8 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
               if (note.scriptureReference.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.sageGreen.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
@@ -509,6 +521,8 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
 
   Widget _buildDevotionNoteCard(DevotionNote note) {
     return GestureDetector(
+      key: ValueKey(
+          'devotion_${note.id}_${note.updatedAt.millisecondsSinceEpoch}'),
       onTap: () async {
         final result = await Navigator.push(
           context,
@@ -516,10 +530,8 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
             builder: (context) => DevotionNoteDetailScreen(note: note),
           ),
         );
-        if (result == true) {
-          // Note was deleted, refresh the calendar
-          _loadNotes();
-        }
+        // Always refresh calendar when returning from detail screen
+        _loadNotes();
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -545,17 +557,32 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      note.scriptureReference.isNotEmpty 
-                          ? note.scriptureReference 
-                          : '큐티노트',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textDark,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          note.title.isNotEmpty
+                              ? note.title
+                              : (note.scriptureReference.isNotEmpty
+                                  ? note.scriptureReference
+                                  : '큐티노트'),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textDark,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '큐티 • ${DateFormat('HH:mm').format(note.date)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.softGray,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Icon(
@@ -565,31 +592,29 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
                   ),
                 ],
               ),
-              if (note.scriptureText.isNotEmpty) ...[
+              if (note.scriptureReference.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryPurple.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    color: AppTheme.sageGreen.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    note.scriptureText,
+                    note.scriptureReference,
                     style: const TextStyle(
                       fontSize: 11,
-                      color: AppTheme.textDark,
-                      height: 1.3,
-                      fontStyle: FontStyle.italic,
+                      color: AppTheme.sageGreen,
+                      fontWeight: FontWeight.w500,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
               if (note.application.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
-                  '적용: ${note.application}',
+                  note.application,
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppTheme.textDark,

@@ -17,6 +17,7 @@ class DevotionNoteFormScreen extends StatefulWidget {
 
 class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
   final _scriptureReferenceController = TextEditingController();
   final _scriptureTextController = TextEditingController();
   final _observationController = TextEditingController();
@@ -37,6 +38,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
 
   void _loadNoteData() {
     final note = widget.note!;
+    _titleController.text = note.title;
     _scriptureReferenceController.text = note.scriptureReference;
     _scriptureTextController.text = note.scriptureText;
     _observationController.text = note.observation;
@@ -48,6 +50,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
 
   @override
   void dispose() {
+    _titleController.dispose();
     _scriptureReferenceController.dispose();
     _scriptureTextController.dispose();
     _observationController.dispose();
@@ -101,6 +104,8 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
             children: [
               _buildInfoCard(),
               const SizedBox(height: 16),
+              _buildTitleSection(),
+              const SizedBox(height: 16),
               _buildBasicInfoSection(),
               const SizedBox(height: 24),
               _buildScriptureSection(),
@@ -147,6 +152,37 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
               color: AppTheme.white,
               height: 1.4,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitleSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: AppTheme.cardDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '제목',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textDark,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _titleController,
+            decoration: const InputDecoration(
+              labelText: '제목',
+              hintText: '비워두면 성경구절이 제목이 됩니다',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.title),
+            ),
+            maxLength: 50,
           ),
         ],
       ),
@@ -401,6 +437,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
       final note = DevotionNote(
         id: widget.note?.id,
         date: _selectedDate,
+        title: _titleController.text.trim(),
         scriptureReference: _scriptureReferenceController.text,
         scriptureText: _scriptureTextController.text,
         observation: _observationController.text,
@@ -414,19 +451,23 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
 
       if (mounted) {
         // Show success dialog
-        await showDialog(
+        final shouldReturn = await showDialog<bool>(
           context: context,
           barrierDismissible: false,
           builder: (context) => NoteSuccessDialog(
             noteType: 'devotion',
-            title: note.scriptureReference,
+            title: note.title.isNotEmpty ? note.title : note.scriptureReference,
             content: note.observation,
             scriptureReference: note.scriptureReference,
             onContinue: () {
-              Navigator.pop(context, true);
+              Navigator.pop(context, true); // Close dialog and return true
             },
           ),
         );
+        
+        if (shouldReturn == true && mounted) {
+          Navigator.pop(context, note); // Close form and return updated note
+        }
       }
     } catch (e) {
       if (mounted) {

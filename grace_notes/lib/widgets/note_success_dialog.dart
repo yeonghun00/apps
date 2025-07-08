@@ -78,7 +78,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
       if (lastShownDate == todayString) {
         // Already shown today, close dialog without showing
         if (mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true); // Return true to indicate success
           widget.onContinue?.call();
         }
         return;
@@ -417,7 +417,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(true); // Return true to indicate success
                           widget.onContinue?.call();
                         },
                         style: ElevatedButton.styleFrom(
@@ -1099,7 +1099,7 @@ ${widget.content}
         );
 
         // Close the dialog after successful sharing
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true); // Return true to indicate success
         widget.onContinue?.call();
       }
     } catch (e) {

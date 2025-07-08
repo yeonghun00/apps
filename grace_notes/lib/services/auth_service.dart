@@ -279,6 +279,71 @@ class AuthService {
     }
   }
 
+  // Delete user account and all associated data
+  static Future<void> deleteAccount() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw Exception('사용자가 로그인되어 있지 않습니다.');
+      
+      final userId = user.uid;
+      
+      // Delete user data from Firestore
+      // Note: In production, consider using Cloud Functions for better data cleanup
+      try {
+        // Delete user document
+        await _firestore.collection('users').doc(userId).delete();
+        
+        // Delete user's community posts
+        final postsQuery = await _firestore
+            .collection('community_posts')
+            .where('authorId', isEqualTo: userId)
+            .get();
+        
+        final batch = _firestore.batch();
+        for (final doc in postsQuery.docs) {
+          batch.delete(doc.reference);
+        }
+        
+        // Delete user's comments
+        final commentsQuery = await _firestore
+            .collection('comments')
+            .where('authorId', isEqualTo: userId)
+            .get();
+        
+        for (final doc in commentsQuery.docs) {
+          batch.delete(doc.reference);
+        }
+        
+        // Delete user's reactions
+        final reactionsQuery = await _firestore
+            .collection('reactions')
+            .where('userId', isEqualTo: userId)
+            .get();
+        
+        for (final doc in reactionsQuery.docs) {
+          batch.delete(doc.reference);
+        }
+        
+        await batch.commit();
+      } catch (e) {
+        print('Error deleting user data from Firestore: $e');
+        // Continue with account deletion even if Firestore cleanup fails
+      }
+      
+      // Sign out from Google if signed in with Google
+      if (user.providerData.any((info) => info.providerId == 'google.com')) {
+        await _googleSignIn.signOut();
+      }
+      
+      // Delete the Firebase Auth account
+      await user.delete();
+      
+    } catch (e) {
+      print('Error deleting account: $e');
+      rethrow;
+    }
+  }
+
   // Get auth error message
   static String getAuthErrorMessage(dynamic error) {
     if (error is FirebaseAuthException) {

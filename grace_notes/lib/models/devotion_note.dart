@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 class DevotionNote {
   final String id;
   final DateTime date;
+  final String title;
   final String scriptureReference;
   final String scriptureText;
   final String observation;
@@ -15,6 +16,7 @@ class DevotionNote {
   DevotionNote({
     String? id,
     required this.date,
+    this.title = '',
     required this.scriptureReference,
     required this.scriptureText,
     required this.observation,
@@ -31,6 +33,7 @@ class DevotionNote {
     return {
       'id': id,
       'date': date.toIso8601String(),
+      'title': title,
       'scriptureReference': scriptureReference,
       'scriptureText': scriptureText,
       'observation': observation,
@@ -46,6 +49,7 @@ class DevotionNote {
     return DevotionNote(
       id: json['id'],
       date: DateTime.parse(json['date']),
+      title: json['title'] ?? '',
       scriptureReference: json['scriptureReference'],
       scriptureText: json['scriptureText'],
       observation: json['observation'],
@@ -60,6 +64,7 @@ class DevotionNote {
   DevotionNote copyWith({
     String? id,
     DateTime? date,
+    String? title,
     String? scriptureReference,
     String? scriptureText,
     String? observation,
@@ -72,6 +77,7 @@ class DevotionNote {
     return DevotionNote(
       id: id ?? this.id,
       date: date ?? this.date,
+      title: title ?? this.title,
       scriptureReference: scriptureReference ?? this.scriptureReference,
       scriptureText: scriptureText ?? this.scriptureText,
       observation: observation ?? this.observation,

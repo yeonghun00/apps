@@ -17,8 +17,28 @@ class MainScreen extends StatefulWidget {
   }
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   int _currentIndex = 0;
+  int _refreshCounter = 0;
+  
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+  
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshCurrentScreen();
+    }
+  }
   
   void navigateToTab(int index) {
     setState(() {
@@ -28,25 +48,25 @@ class _MainScreenState extends State<MainScreen> {
   
   void refreshCurrentScreen() {
     setState(() {
-      // This will trigger a rebuild of the current screen
+      _refreshCounter++;
     });
   }
   
   Widget _getCurrentScreen() {
-    // Force unique keys to ensure AnimatedSwitcher always animates
+    // Force unique keys to ensure screen refreshes on data changes
     switch (_currentIndex) {
       case 0:
-        return HomeScreen(key: ValueKey('home_$_currentIndex'));
+        return HomeScreen(key: ValueKey('home_$_currentIndex-$_refreshCounter'));
       case 1:
-        return SermonNotesScreen(key: ValueKey('sermon_$_currentIndex'));
+        return SermonNotesScreen(key: ValueKey('sermon_$_currentIndex-$_refreshCounter'));
       case 2:
-        return DevotionNotesScreen(key: ValueKey('devotion_$_currentIndex'));
+        return DevotionNotesScreen(key: ValueKey('devotion_$_currentIndex-$_refreshCounter'));
       case 3:
-        return CalendarScreen(key: ValueKey('calendar_$_currentIndex'));
+        return CalendarScreen(key: ValueKey('calendar_$_currentIndex-$_refreshCounter'));
       case 4:
-        return CommunityScreen(key: ValueKey('community_$_currentIndex'));
+        return CommunityScreen(key: ValueKey('community_$_currentIndex-$_refreshCounter'));
       default:
-        return HomeScreen(key: ValueKey('home_$_currentIndex'));
+        return HomeScreen(key: ValueKey('home_$_currentIndex-$_refreshCounter'));
     }
   }
 
@@ -88,8 +108,8 @@ class _MainScreenState extends State<MainScreen> {
             onTap: (index) {
               setState(() {
                 _currentIndex = index;
+                _refreshCounter++; // Trigger refresh when switching tabs
               });
-              refreshCurrentScreen();
             },
             type: BottomNavigationBarType.fixed,
             backgroundColor: AppTheme.white,

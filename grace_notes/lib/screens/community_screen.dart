@@ -383,6 +383,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
           children: [
             _buildCategoryChip('전체', null),
             const SizedBox(width: 8),
+            _buildCategoryChip('신앙나눔', PostCategory.faithSharing),
+            const SizedBox(width: 8),
             _buildCategoryChip('큐티나눔', PostCategory.devotionSharing),
             const SizedBox(width: 8),
             _buildCategoryChip('설교나눔', PostCategory.sermonSharing),
@@ -421,6 +423,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
   String _getCategoryDisplayName(PostCategory? category) {
     if (category == null) return '전체';
     switch (category) {
+      case PostCategory.faithSharing:
+        return '신앙나눔';
       case PostCategory.devotionSharing:
         return '큐티나눔';
       case PostCategory.sermonSharing:
@@ -494,7 +498,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               ),
             ),
             const SizedBox(height: 36),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
@@ -543,6 +547,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
         return '하나님의 놀라운 역사하심을\n간증으로 나누어주세요';
       case PostCategory.question:
         return '궁금한 것이 있으시면\n언제든 편하게 물어보세요';
+      case PostCategory.faithSharing:
+        return '신앙의 심운 이야기를\n함께 나누어보세요';
       default:
         return '서로의 믿음을 격려하고\n함께 성장해나가는 공간이에요';
     }
@@ -558,7 +564,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
           children: [
             InkWell(
               borderRadius: BorderRadius.circular(16),
-              onTap: () => _isLoggedIn ? _showPostDetails(post) : _showLoginRequiredDialog(),
+              onTap: () => _isLoggedIn
+                  ? _showPostDetails(post)
+                  : _showLoginRequiredDialog(),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -570,8 +578,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color:
-                                _getCategoryColor(post.category).withOpacity(0.2),
+                            color: _getCategoryColor(post.category)
+                                .withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -619,8 +627,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         post.scriptureReference!.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: AppTheme.sageGreen.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
@@ -698,7 +706,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ),
                   child: Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppTheme.primaryPurple.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(20),
@@ -744,8 +753,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
         return AppTheme.mint;
       case PostCategory.question:
         return AppTheme.lavender;
+      case PostCategory.faithSharing:
+        return AppTheme.primaryPurple;
     }
   }
+
 
   String _getTimeAgo(DateTime dateTime) {
     final now = DateTime.now();
@@ -772,6 +784,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: _CreatePostDialog(
+          defaultCategory: PostCategory.faithSharing,
           onPostCreated: () {
             // Posts will automatically update via stream
           },
@@ -790,260 +803,274 @@ class _CommunityScreenState extends State<CommunityScreen> {
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: StreamBuilder<List<CommunityPost>>(
-        stream: FirebaseCommunityService.getPostsStream(),
-        builder: (context, snapshot) {
-          // Find the current post in the stream data
-          CommunityPost currentPost = post;
-          if (snapshot.hasData) {
-            final updatedPost = snapshot.data!.firstWhere(
-              (p) => p.id == post.id,
-              orElse: () => post,
-            );
-            currentPost = updatedPost;
-          }
+            stream: FirebaseCommunityService.getPostsStream(),
+            builder: (context, snapshot) {
+              // Find the current post in the stream data
+              CommunityPost currentPost = post;
+              if (snapshot.hasData) {
+                final updatedPost = snapshot.data!.firstWhere(
+                  (p) => p.id == post.id,
+                  orElse: () => post,
+                );
+                currentPost = updatedPost;
+              }
 
-          final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-          final screenHeight = MediaQuery.of(context).size.height;
-          final maxHeight = screenHeight * 0.9;
-          final minHeight = screenHeight * 0.5;
-          final dynamicHeight = (screenHeight * 0.8) - keyboardHeight;
-          
-          return Container(
-            height: dynamicHeight.clamp(minHeight, maxHeight),
-            decoration: const BoxDecoration(
-              color: AppTheme.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: _getCategoryColor(currentPost.category).withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          currentPost.categoryDisplayName,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: _getCategoryColor(currentPost.category),
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          // Delete button (only for post author) - check both uid and email for backward compatibility
-                          if (AuthService.currentUser?.uid == currentPost.authorId || AuthService.currentUser?.email == currentPost.authorId)
-                            GestureDetector(
-                              onTap: () => _showDeleteConfirmation(currentPost),
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Icon(
-                                  Icons.delete_outline,
-                                  size: 16,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          if (AuthService.currentUser?.uid == currentPost.authorId || AuthService.currentUser?.email == currentPost.authorId)
-                            const SizedBox(width: 8),
-                          // Amen button
-                          GestureDetector(
-                            onTap: () => _toggleAmen(currentPost),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 10),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppTheme.primaryPurple,
-                                    AppTheme.lavender,
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(25),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppTheme.primaryPurple.withOpacity(0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.volunteer_activism,
-                                    size: 18,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    '아멘 ${currentPost.amenCount}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+              final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+              final screenHeight = MediaQuery.of(context).size.height;
+              final maxHeight = screenHeight * 0.9;
+              final minHeight = screenHeight * 0.5;
+              final dynamicHeight = (screenHeight * 0.8) - keyboardHeight;
+
+              return Container(
+                height: dynamicHeight.clamp(minHeight, maxHeight),
+                decoration: const BoxDecoration(
+                  color: AppTheme.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentPost.title,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: AppTheme.textDark,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (currentPost.scriptureReference?.isNotEmpty == true) ...[
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppTheme.lavender.withOpacity(0.1),
+                              color: _getCategoryColor(currentPost.category)
+                                  .withOpacity(0.2),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: AppTheme.lavender.withOpacity(0.3),
+                            ),
+                            child: Text(
+                              currentPost.categoryDisplayName,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: _getCategoryColor(currentPost.category),
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.menu_book,
+                          ),
+                          const Spacer(),
+                          Row(
+                            children: [
+                              // Delete button (only for post author) - check both uid and email for backward compatibility
+                              if (AuthService.currentUser?.uid ==
+                                      currentPost.authorId ||
+                                  AuthService.currentUser?.email ==
+                                      currentPost.authorId)
+                                GestureDetector(
+                                  onTap: () =>
+                                      _showDeleteConfirmation(currentPost),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Icon(
+                                      Icons.delete_outline,
                                       size: 16,
-                                      color: AppTheme.primaryPurple,
+                                      color: Colors.red,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      currentPost.scriptureReference!,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppTheme.primaryPurple,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ],
-                            ),
+                              if (AuthService.currentUser?.uid ==
+                                      currentPost.authorId ||
+                                  AuthService.currentUser?.email ==
+                                      currentPost.authorId)
+                                const SizedBox(width: 8),
+                              // Amen button
+                              GestureDetector(
+                                onTap: () => _toggleAmen(currentPost),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppTheme.primaryPurple,
+                                        AppTheme.lavender,
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppTheme.primaryPurple
+                                            .withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.volunteer_activism,
+                                        size: 18,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        '아멘 ${currentPost.amenCount}',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 16),
                         ],
-                        Text(
-                          currentPost.content,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppTheme.textDark,
-                            height: 1.6,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              currentPost.authorName,
+                              currentPost.title,
                               style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
                                 color: AppTheme.textDark,
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(height: 16),
+                            if (currentPost.scriptureReference?.isNotEmpty ==
+                                true) ...[
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.lavender.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: AppTheme.lavender.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.menu_book,
+                                          size: 16,
+                                          color: AppTheme.primaryPurple,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          currentPost.scriptureReference!,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppTheme.primaryPurple,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
                             Text(
-                              _getTimeAgo(currentPost.createdAt),
+                              currentPost.content,
                               style: const TextStyle(
-                                fontSize: 12,
-                                color: AppTheme.softGray,
+                                fontSize: 16,
+                                color: AppTheme.textDark,
+                                height: 1.6,
                               ),
                             ),
+                            const SizedBox(height: 24),
+                            Row(
+                              children: [
+                                Text(
+                                  currentPost.authorName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.textDark,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  _getTimeAgo(currentPost.createdAt),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.softGray,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 32),
+                            const Divider(),
+                            const SizedBox(height: 16),
+                            const Text(
+                              '댓글',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.textDark,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            StreamBuilder<List<Comment>>(
+                                stream:
+                                    FirebaseCommunityService.getCommentsStream(
+                                        currentPost.id),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+
+                                  if (snapshot.hasError) {
+                                    return Text('오류: ${snapshot.error}');
+                                  }
+
+                                  final comments = snapshot.data ?? [];
+
+                                  if (comments.isEmpty) {
+                                    return Container(
+                                      padding: const EdgeInsets.all(16),
+                                      child: const Text(
+                                        '아직 댓글이 없습니다. 첫 번째 댓글을 작성해보세요!',
+                                        style: TextStyle(
+                                          color: AppTheme.softGray,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  }
+
+                                  return Column(
+                                    children: comments
+                                        .map((comment) =>
+                                            _buildCommentCard(comment))
+                                        .toList(),
+                                  );
+                                }),
                           ],
                         ),
-                        const SizedBox(height: 32),
-                        const Divider(),
-                        const SizedBox(height: 16),
-                        const Text(
-                          '댓글',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: AppTheme.textDark,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        StreamBuilder<List<Comment>>(
-                          stream: FirebaseCommunityService.getCommentsStream(currentPost.id),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-
-                            if (snapshot.hasError) {
-                              return Text('오류: ${snapshot.error}');
-                            }
-
-                            final comments = snapshot.data ?? [];
-
-                            if (comments.isEmpty) {
-                              return Container(
-                                padding: const EdgeInsets.all(16),
-                                child: const Text(
-                                  '아직 댓글이 없습니다. 첫 번째 댓글을 작성해보세요!',
-                                  style: TextStyle(
-                                    color: AppTheme.softGray,
-                                    fontSize: 14,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              );
-                            }
-
-                            return Column(
-                              children: comments.map((comment) => _buildCommentCard(comment)).toList(),
-                            );
-                          }
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    if (_isLoggedIn) _buildCommentInput(currentPost.id),
+                  ],
                 ),
-                if (_isLoggedIn)
-                  _buildCommentInput(currentPost.id),
-              ],
-            ),
-          );
-        }
-        ),
+              );
+            }),
       ),
     );
   }
@@ -1115,7 +1142,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
               ),
               const Spacer(),
               // Check both uid and email for backward compatibility
-              if (AuthService.currentUser?.uid == comment.authorId || AuthService.currentUser?.email == comment.authorId)
+              if (AuthService.currentUser?.uid == comment.authorId ||
+                  AuthService.currentUser?.email == comment.authorId)
                 GestureDetector(
                   onTap: () => _deleteComment(comment),
                   child: Container(
@@ -1148,7 +1176,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
               GestureDetector(
                 onTap: () => _toggleCommentAmen(comment),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryPurple.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -1340,7 +1369,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     if (result == true) {
       try {
-        await FirebaseCommunityService.deleteComment(comment.id, comment.postId);
+        await FirebaseCommunityService.deleteComment(
+            comment.id, comment.postId);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('댓글이 삭제되었습니다'),
@@ -1430,8 +1460,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
 class _CreatePostDialog extends StatefulWidget {
   final VoidCallback onPostCreated;
+  final PostCategory defaultCategory;
 
-  const _CreatePostDialog({required this.onPostCreated});
+  const _CreatePostDialog({
+    required this.onPostCreated,
+    this.defaultCategory = PostCategory.faithSharing,
+  });
 
   @override
   State<_CreatePostDialog> createState() => __CreatePostDialogState();
@@ -1444,8 +1478,14 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
   final _scriptureController = TextEditingController();
   final _scriptureTextController = TextEditingController();
 
-  PostCategory _selectedCategory = PostCategory.devotionSharing;
+  late PostCategory _selectedCategory;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = widget.defaultCategory;
+  }
 
   @override
   void dispose() {
@@ -1461,7 +1501,7 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     final screenHeight = MediaQuery.of(context).size.height;
     final availableHeight = screenHeight - keyboardHeight;
-    
+
     return Container(
       height: availableHeight * 0.9,
       decoration: const BoxDecoration(
@@ -1516,7 +1556,8 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
                   top: 16,
                   bottom: 16 + MediaQuery.of(context).viewInsets.bottom * 0.1,
                 ),
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1606,8 +1647,12 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
     );
   }
 
+
+
   String _getCategoryDisplayName(PostCategory category) {
     switch (category) {
+      case PostCategory.faithSharing:
+        return '신앙나눔';
       case PostCategory.devotionSharing:
         return '큐티나눔';
       case PostCategory.sermonSharing:
@@ -1638,7 +1683,8 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
             '\n\n📖 ${_scriptureController.text}\n"${_scriptureTextController.text}"';
       }
 
-      await FirebaseCommunityService.createPost(
+      // Create post
+      final postId = await FirebaseCommunityService.createPost(
         title: _titleController.text,
         content: finalContent,
         category: _selectedCategory,

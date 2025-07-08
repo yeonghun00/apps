@@ -209,7 +209,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
               builder: (context) => const DevotionNoteFormScreen(),
             ),
           );
-          if (result == true) {
+          if (result != null) {
             _loadNotes();
           }
         },
@@ -932,9 +932,11 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                           ),
                         Expanded(
                           child: Text(
-                            note.scriptureReference.isNotEmpty
-                                ? note.scriptureReference
-                                : '큐티노트',
+                            note.title.isNotEmpty
+                                ? note.title
+                                : (note.scriptureReference.isNotEmpty
+                                    ? note.scriptureReference
+                                    : '큐티노트'),
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -1045,9 +1047,11 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  note.scriptureReference.isNotEmpty
-                      ? note.scriptureReference
-                      : '큐티노트',
+                  note.title.isNotEmpty
+                      ? note.title
+                      : (note.scriptureReference.isNotEmpty
+                          ? note.scriptureReference
+                          : '큐티노트'),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -1123,9 +1127,11 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        note.scriptureReference.isNotEmpty
-                            ? note.scriptureReference
-                            : '큐티노트',
+                        note.title.isNotEmpty
+                            ? note.title
+                            : (note.scriptureReference.isNotEmpty
+                                ? note.scriptureReference
+                                : '큐티노트'),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -1279,9 +1285,11 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              note.scriptureReference.isNotEmpty
-                                  ? note.scriptureReference
-                                  : '큐티노트',
+                              note.title.isNotEmpty
+                                  ? note.title
+                                  : (note.scriptureReference.isNotEmpty
+                                      ? note.scriptureReference
+                                      : '큐티노트'),
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
@@ -1327,7 +1335,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                                         DevotionNoteFormScreen(note: note),
                                   ),
                                 );
-                                if (result == true) {
+                                if (result != null) {
                                   _loadNotes();
                                 }
                               },

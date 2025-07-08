@@ -1,7 +1,7 @@
 name: grace_notes
 description: "Grace Notes - 기독교 예배노트 & 큐티 앱"
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.1+4
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
@@ -37,6 +37,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -49,3 +50,11 @@ flutter:
     - assets/animations/
     - assets/icons/
     - assets/bible/
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "android/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+  adaptive_icon_background: "#9B7EBD"
+  adaptive_icon_foreground: "android/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+  adaptive_icon_monochrome: "android/app/src/main/res/mipmap-hdpi/ic_launcher.png"

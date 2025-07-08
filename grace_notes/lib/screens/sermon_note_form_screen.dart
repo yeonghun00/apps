@@ -366,7 +366,7 @@ class _SermonNoteFormScreenState extends State<SermonNoteFormScreen> {
 
       if (mounted) {
         // Show success dialog
-        await showDialog(
+        final shouldReturn = await showDialog<bool>(
           context: context,
           barrierDismissible: false,
           builder: (context) => NoteSuccessDialog(
@@ -375,10 +375,14 @@ class _SermonNoteFormScreenState extends State<SermonNoteFormScreen> {
             content: note.mainPoints,
             scriptureReference: note.scriptureReference,
             onContinue: () {
-              Navigator.pop(context, true);
+              Navigator.pop(context, true); // Close dialog and return true
             },
           ),
         );
+        
+        if (shouldReturn == true && mounted) {
+          Navigator.pop(context, note); // Close form and return updated note
+        }
       }
     } catch (e) {
       if (mounted) {
