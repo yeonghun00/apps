@@ -44,10 +44,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 150),
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
-            opacity: Tween<double>(begin: 0.8, end: 1.0).animate(animation),
+            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            ),
             child: child,
           );
         },
@@ -103,11 +105,11 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(
                 icon: AnimatedScale(
                   scale: _currentIndex == 0 ? 1.2 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.elasticOut,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOutBack,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
                     child: Icon(
                       _currentIndex == 0 ? Icons.home : Icons.home_outlined,
                       size: 24,
@@ -122,11 +124,11 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(
                 icon: AnimatedScale(
                   scale: _currentIndex == 1 ? 1.2 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.elasticOut,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOutBack,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
                     child: Icon(
                       _currentIndex == 1 ? Icons.church : Icons.church_outlined,
                       size: 24,
@@ -141,11 +143,11 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(
                 icon: AnimatedScale(
                   scale: _currentIndex == 2 ? 1.2 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.elasticOut,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOutBack,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
                     child: Icon(
                       _currentIndex == 2 ? Icons.book : Icons.book_outlined,
                       size: 24,
@@ -160,11 +162,11 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(
                 icon: AnimatedScale(
                   scale: _currentIndex == 3 ? 1.2 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.elasticOut,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOutBack,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
                     child: Icon(
                       _currentIndex == 3 ? Icons.calendar_month : Icons.calendar_month_outlined,
                       size: 24,
@@ -179,11 +181,11 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(
                 icon: AnimatedScale(
                   scale: _currentIndex == 4 ? 1.2 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.elasticOut,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOutBack,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
                     child: Icon(
                       _currentIndex == 4 ? Icons.people : Icons.people_outline,
                       size: 24,
