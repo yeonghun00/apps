@@ -21,20 +21,11 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String _todaysVerse = "여호와는 나의 목자시니 내게 부족함이 없으리로다 - 시편 23:1";
   CommunityPost? _featuredPost;
   bool _isLoadingVerse = false;
   bool _isLoadingPost = false;
-
-  late AnimationController _greetingController;
-  late AnimationController _verseController;
-  late AnimationController _cardController;
-  late Animation<double> _greetingAnimation;
-  late Animation<double> _verseAnimation;
-  late Animation<Offset> _cardSlideAnimation;
-  late Animation<double> _cardFadeAnimation;
 
   @override
   void initState() {
@@ -45,57 +36,11 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshData();
     });
-
-    // Initialize animations with feminine, gentle timing
-    _greetingController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    _verseController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    _cardController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _greetingAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _greetingController, curve: Curves.easeOutCubic),
-    );
-
-    _verseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _verseController, curve: Curves.easeOutQuart),
-    );
-
-    _cardSlideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic));
-
-    _cardFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _cardController, curve: Curves.easeOut),
-    );
-
-    // Start animations with gentle delays
-    Future.delayed(const Duration(milliseconds: 300), () {
-      _greetingController.forward();
-    });
-    Future.delayed(const Duration(milliseconds: 600), () {
-      _verseController.forward();
-    });
-    Future.delayed(const Duration(milliseconds: 900), () {
-      _cardController.forward();
-    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _greetingController.dispose();
-    _verseController.dispose();
-    _cardController.dispose();
     super.dispose();
   }
 
@@ -452,39 +397,16 @@ class _HomeScreenState extends State<HomeScreen>
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  // Add bookmark functionality
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('말씀이 즐겨찾기에 저장되었어요 💜'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryPurple.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.bookmark_border_rounded,
-                    color: AppTheme.primaryPurple,
-                    size: 20,
-                  ),
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 20),
           if (_isLoadingVerse)
-            Container(
+            SizedBox(
               height: 80,
               child: const Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryPurple),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppTheme.primaryPurple),
                 ),
               ),
             )
@@ -539,7 +461,8 @@ class _HomeScreenState extends State<HomeScreen>
               const Spacer(),
               if (isSunday || isMorning)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -569,7 +492,8 @@ class _HomeScreenState extends State<HomeScreen>
           _buildFullWidthActionButton(
             icon: Icons.church,
             title: '설교노트 작성하기',
-            subtitle: isSunday ? '오늘 주일 예배에서 받은 은혜를 기록해보세요' : '설교 말씀을 통해 받은 은혜를 나누어요',
+            subtitle:
+                isSunday ? '오늘 주일 예배에서 받은 은혜를 기록해보세요' : '설교 말씀을 통해 받은 은혜를 나누어요',
             color: AppTheme.primaryPurple,
             isHighlighted: isSunday,
             onTap: () async {
@@ -589,7 +513,8 @@ class _HomeScreenState extends State<HomeScreen>
           _buildFullWidthActionButton(
             icon: Icons.auto_stories,
             title: '큐티노트 작성하기',
-            subtitle: isMorning ? '새로운 하루, 말씀과 함께 시작해보세요' : '오늘의 묵상을 통해 받은 은혜를 기록해요',
+            subtitle:
+                isMorning ? '새로운 하루, 말씀과 함께 시작해보세요' : '오늘의 묵상을 통해 받은 은혜를 기록해요',
             color: AppTheme.sageGreen,
             isHighlighted: isMorning && !isSunday,
             onTap: () async {
@@ -671,7 +596,10 @@ class _HomeScreenState extends State<HomeScreen>
                         colors: [color, color.withOpacity(0.8)],
                       )
                     : LinearGradient(
-                        colors: [color.withOpacity(0.15), color.withOpacity(0.1)],
+                        colors: [
+                          color.withOpacity(0.15),
+                          color.withOpacity(0.1)
+                        ],
                       ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: isHighlighted
@@ -858,7 +786,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             height: 48,
                             child: ElevatedButton(
                               onPressed: () async {
@@ -901,7 +829,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             height: 48,
                             child: ElevatedButton(
                               onPressed: () async {

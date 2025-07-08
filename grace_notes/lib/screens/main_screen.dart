@@ -32,32 +32,36 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
   
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const SermonNotesScreen(),
-    const DevotionNotesScreen(),
-    const CalendarScreen(),
-    const CommunityScreen(),
-  ];
+  Widget _getCurrentScreen() {
+    // Force unique keys to ensure AnimatedSwitcher always animates
+    switch (_currentIndex) {
+      case 0:
+        return HomeScreen(key: ValueKey('home_$_currentIndex'));
+      case 1:
+        return SermonNotesScreen(key: ValueKey('sermon_$_currentIndex'));
+      case 2:
+        return DevotionNotesScreen(key: ValueKey('devotion_$_currentIndex'));
+      case 3:
+        return CalendarScreen(key: ValueKey('calendar_$_currentIndex'));
+      case 4:
+        return CommunityScreen(key: ValueKey('community_$_currentIndex'));
+      default:
+        return HomeScreen(key: ValueKey('home_$_currentIndex'));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 200),
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
-            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            ),
+            opacity: animation,
             child: child,
           );
         },
-        child: IndexedStack(
-          key: ValueKey<int>(_currentIndex),
-          index: _currentIndex,
-          children: _screens,
-        ),
+        child: _getCurrentScreen(),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

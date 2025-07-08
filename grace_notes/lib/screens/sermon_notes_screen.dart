@@ -12,34 +12,23 @@ class SermonNotesScreen extends StatefulWidget {
   State<SermonNotesScreen> createState() => _SermonNotesScreenState();
 }
 
-class _SermonNotesScreenState extends State<SermonNotesScreen>
-    with TickerProviderStateMixin {
+class _SermonNotesScreenState extends State<SermonNotesScreen> {
   List<SermonNote> _notes = [];
   List<SermonNote> _filteredNotes = [];
   bool _isLoading = true;
   bool _isSearching = false;
   String _selectedView = 'journey'; // 'journey', 'list', 'calendar'
   String _searchQuery = '';
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
     _loadNotes();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -56,7 +45,6 @@ class _SermonNotesScreenState extends State<SermonNotesScreen>
         _filteredNotes = _notes;
         _isLoading = false;
       });
-      _animationController.forward();
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -213,25 +201,17 @@ class _SermonNotesScreenState extends State<SermonNotesScreen>
           ],
         ],
       ),
-      body: AnimatedBuilder(
-        animation: _fadeAnimation,
-        builder: (context, child) {
-          return Opacity(
-            opacity: _fadeAnimation.value,
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _notes.isEmpty
-                    ? _buildEmptyState()
-                    : Column(
-                        children: [
-                          if (_isSearching && _searchQuery.isNotEmpty)
-                            _buildSearchResults(),
-                          Expanded(child: _buildSelectedView()),
-                        ],
-                      ),
-          );
-        },
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _notes.isEmpty
+              ? _buildEmptyState()
+              : Column(
+                  children: [
+                    if (_isSearching && _searchQuery.isNotEmpty)
+                      _buildSearchResults(),
+                    Expanded(child: _buildSelectedView()),
+                  ],
+                ),
       floatingActionButton: FloatingActionButton(
         heroTag: "sermon_fab",
         onPressed: () async {
@@ -701,40 +681,6 @@ class _SermonNotesScreenState extends State<SermonNotesScreen>
             ],
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              const Text(
-                '이번 달 목표',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppTheme.textDark,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '$thisMonthCount/$monthlyGoal회',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: thisMonthCount >= monthlyGoal
-                      ? AppTheme.primaryPurple
-                      : AppTheme.softGray,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: (thisMonthCount / monthlyGoal).clamp(0.0, 1.0),
-            backgroundColor: AppTheme.cream,
-            valueColor: AlwaysStoppedAnimation(
-              thisMonthCount >= monthlyGoal
-                  ? AppTheme.primaryPurple
-                  : AppTheme.lavender,
-            ),
-            borderRadius: BorderRadius.circular(4),
-          ),
         ],
       ),
     );

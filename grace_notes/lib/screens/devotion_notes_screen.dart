@@ -37,7 +37,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final notes = await StorageService.getDevotionNotes();
       setState(() {
@@ -59,15 +59,26 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
         _filteredNotes = _notes;
       } else {
         _filteredNotes = _notes.where((note) {
-          final scriptureRefMatch = note.scriptureReference.toLowerCase().contains(query.toLowerCase());
-          final scriptureTextMatch = note.scriptureText.toLowerCase().contains(query.toLowerCase());
-          final interpretationMatch = note.interpretation.toLowerCase().contains(query.toLowerCase());
-          final observationMatch = note.observation.toLowerCase().contains(query.toLowerCase());
-          final applicationMatch = note.application.toLowerCase().contains(query.toLowerCase());
-          final prayerMatch = note.prayer.toLowerCase().contains(query.toLowerCase());
-          
-          return scriptureRefMatch || scriptureTextMatch || interpretationMatch || 
-                 observationMatch || applicationMatch || prayerMatch;
+          final scriptureRefMatch = note.scriptureReference
+              .toLowerCase()
+              .contains(query.toLowerCase());
+          final scriptureTextMatch =
+              note.scriptureText.toLowerCase().contains(query.toLowerCase());
+          final interpretationMatch =
+              note.interpretation.toLowerCase().contains(query.toLowerCase());
+          final observationMatch =
+              note.observation.toLowerCase().contains(query.toLowerCase());
+          final applicationMatch =
+              note.application.toLowerCase().contains(query.toLowerCase());
+          final prayerMatch =
+              note.prayer.toLowerCase().contains(query.toLowerCase());
+
+          return scriptureRefMatch ||
+              scriptureTextMatch ||
+              interpretationMatch ||
+              observationMatch ||
+              applicationMatch ||
+              prayerMatch;
         }).toList();
       }
     });
@@ -153,7 +164,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                   value: 'calendar',
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_month, size: 20, color: AppTheme.sageGreen),
+                      Icon(Icons.calendar_month,
+                          size: 20, color: AppTheme.sageGreen),
                       SizedBox(width: 8),
                       Text('달력'),
                     ],
@@ -246,7 +258,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     if (_isSearching && _filteredNotes.isEmpty && _searchQuery.isNotEmpty) {
       return _buildNoSearchResults();
     }
-    
+
     switch (_selectedView) {
       case 'journey':
         return _buildJourneyView();
@@ -466,7 +478,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     final totalNotes = _isSearching ? _filteredNotes.length : _notes.length;
     final daysActive = _getDaysActive();
     final currentStreak = _getCurrentStreak();
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -528,9 +540,11 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
             children: [
               _buildJourneyStatCard('총 노트', '$totalNotes개', Icons.notes),
               const SizedBox(width: 12),
-              _buildJourneyStatCard('현재 연속', '${currentStreak}일', Icons.local_fire_department),
+              _buildJourneyStatCard(
+                  '현재 연속', '$currentStreak일', Icons.local_fire_department),
               const SizedBox(width: 12),
-              _buildJourneyStatCard('활동 기간', '${daysActive}일', Icons.calendar_today),
+              _buildJourneyStatCard(
+                  '활동 기간', '$daysActive일', Icons.calendar_today),
             ],
           ),
         ],
@@ -576,7 +590,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     final longestStreak = _getLongestStreak();
     final weeklyGoal = 5; // Can be made configurable
     final thisWeekCount = _getThisWeekCount();
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: AppTheme.cardDecoration,
@@ -631,42 +645,13 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              const Text(
-                '이번 주 목표',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppTheme.textDark,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '$thisWeekCount/$weeklyGoal',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: thisWeekCount >= weeklyGoal ? AppTheme.sageGreen : AppTheme.softGray,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: thisWeekCount / weeklyGoal,
-            backgroundColor: AppTheme.cream,
-            valueColor: AlwaysStoppedAnimation(
-              thisWeekCount >= weeklyGoal ? AppTheme.sageGreen : AppTheme.primaryPurple,
-            ),
-            borderRadius: BorderRadius.circular(4),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildStreakCard(String title, String value, String emoji, Color color) {
+  Widget _buildStreakCard(
+      String title, String value, String emoji, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -712,7 +697,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
   Widget _buildGrowthInsights() {
     final monthlyData = _getMonthlyInsights();
     final favoriteBooks = _getFavoriteBooks();
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: AppTheme.cardDecoration,
@@ -758,22 +743,28 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: favoriteBooks.take(3).map((book) => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppTheme.primaryPurple.withOpacity(0.5), width: 1),
-                ),
-                child: Text(
-                  '${book['book']} (${book['count']}회)',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppTheme.primaryPurple.withOpacity(0.9),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )).toList(),
+              children: favoriteBooks
+                  .take(3)
+                  .map((book) => Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryPurple.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                              color: AppTheme.primaryPurple.withOpacity(0.5),
+                              width: 1),
+                        ),
+                        child: Text(
+                          '${book['book']} (${book['count']}회)',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.primaryPurple.withOpacity(0.9),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ))
+                  .toList(),
             ),
             const SizedBox(height: 16),
           ],
@@ -825,21 +816,22 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: monthlyData['growth']! > 0 
+                    color: monthlyData['growth']! > 0
                         ? AppTheme.sageGreen.withOpacity(0.2)
                         : AppTheme.softGray.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    monthlyData['growth']! > 0 
+                    monthlyData['growth']! > 0
                         ? '+${monthlyData['growth']}%'
                         : '${monthlyData['growth']}%',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: monthlyData['growth']! > 0 
+                      color: monthlyData['growth']! > 0
                           ? AppTheme.sageGreen
                           : AppTheme.softGray,
                     ),
@@ -866,14 +858,16 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        ...(_isSearching ? _filteredNotes : _notes).take(10).map((note) => _buildTimelineItem(note)).toList(),
+        ...(_isSearching ? _filteredNotes : _notes)
+            .take(10)
+            .map((note) => _buildTimelineItem(note)),
       ],
     );
   }
 
   Widget _buildTimelineItem(DevotionNote note) {
     final isRecent = DateTime.now().difference(note.date).inDays < 7;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -903,10 +897,12 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isRecent ? AppTheme.sageGreen.withOpacity(0.05) : AppTheme.white,
+                  color: isRecent
+                      ? AppTheme.sageGreen.withOpacity(0.05)
+                      : AppTheme.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isRecent 
+                    color: isRecent
                         ? AppTheme.sageGreen.withOpacity(0.3)
                         : AppTheme.cream,
                   ),
@@ -919,7 +915,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                         if (isRecent)
                           Container(
                             margin: const EdgeInsets.only(right: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppTheme.sageGreen,
                               borderRadius: BorderRadius.circular(8),
@@ -935,8 +932,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                           ),
                         Expanded(
                           child: Text(
-                            note.scriptureReference.isNotEmpty 
-                                ? note.scriptureReference 
+                            note.scriptureReference.isNotEmpty
+                                ? note.scriptureReference
                                 : '큐티노트',
                             style: TextStyle(
                               fontSize: 14,
@@ -984,7 +981,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
       final monthKey = DateFormat('yyyy-MM').format(note.date);
       groupedNotes.putIfAbsent(monthKey, () => []).add(note);
     }
-    
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: groupedNotes.keys.length,
@@ -992,14 +989,15 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
         final monthKey = groupedNotes.keys.elementAt(index);
         final monthNotes = groupedNotes[monthKey]!;
         final monthDate = DateTime.parse('$monthKey-01');
-        
+
         return Container(
           margin: const EdgeInsets.only(bottom: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppTheme.sageGreen.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -1014,7 +1012,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              ...monthNotes.map((note) => _buildCompactNoteCard(note)).toList(),
+              ...monthNotes.map((note) => _buildCompactNoteCard(note)),
             ],
           ),
         );
@@ -1047,8 +1045,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  note.scriptureReference.isNotEmpty 
-                      ? note.scriptureReference 
+                  note.scriptureReference.isNotEmpty
+                      ? note.scriptureReference
                       : '큐티노트',
                   style: const TextStyle(
                     fontSize: 14,
@@ -1125,8 +1123,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        note.scriptureReference.isNotEmpty 
-                            ? note.scriptureReference 
+                        note.scriptureReference.isNotEmpty
+                            ? note.scriptureReference
                             : '큐티노트',
                         style: const TextStyle(
                           fontSize: 16,
@@ -1281,8 +1279,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              note.scriptureReference.isNotEmpty 
-                                  ? note.scriptureReference 
+                              note.scriptureReference.isNotEmpty
+                                  ? note.scriptureReference
                                   : '큐티노트',
                               style: const TextStyle(
                                 fontSize: 20,
@@ -1318,13 +1316,15 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.edit, color: AppTheme.sageGreen),
+                              icon: const Icon(Icons.edit,
+                                  color: AppTheme.sageGreen),
                               onPressed: () async {
                                 Navigator.pop(context);
                                 final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DevotionNoteFormScreen(note: note),
+                                    builder: (context) =>
+                                        DevotionNoteFormScreen(note: note),
                                   ),
                                 );
                                 if (result == true) {
@@ -1358,7 +1358,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                   children: [
                     if (note.scriptureReference.isNotEmpty)
                       _buildBeautifulDetailSection(
-                        '📖 본문', 
+                        '📖 본문',
                         note.scriptureReference,
                         AppTheme.sageGreen,
                       ),
@@ -1366,29 +1366,29 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
                       _buildDevotionScriptureSection(note.scriptureText),
                     if (note.observation.isNotEmpty)
                       _buildSOAPSection(
-                        'S', 
-                        '👀 관찰 (Observation)', 
+                        'S',
+                        '👀 관찰 (Observation)',
                         note.observation,
                         AppTheme.sageGreen,
                       ),
                     if (note.interpretation.isNotEmpty)
                       _buildSOAPSection(
-                        'O', 
-                        '💭 해석 (Interpretation)', 
+                        'O',
+                        '💭 해석 (Interpretation)',
                         note.interpretation,
                         AppTheme.primaryPurple,
                       ),
                     if (note.application.isNotEmpty)
                       _buildSOAPSection(
-                        'A', 
-                        '🎯 적용 (Application)', 
+                        'A',
+                        '🎯 적용 (Application)',
                         note.application,
                         AppTheme.darkMint,
                       ),
                     if (note.prayer.isNotEmpty)
                       _buildSOAPSection(
-                        'P', 
-                        '🙏 기도 (Prayer)', 
+                        'P',
+                        '🙏 기도 (Prayer)',
                         note.prayer,
                         AppTheme.deepLavender,
                       ),
@@ -1402,9 +1402,10 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     );
   }
 
-  Widget _buildBeautifulDetailSection(String title, String content, Color color) {
+  Widget _buildBeautifulDetailSection(
+      String title, String content, Color color) {
     if (content.isEmpty) return const SizedBox.shrink();
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(18),
@@ -1510,7 +1511,8 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     );
   }
 
-  Widget _buildSOAPSection(String letter, String title, String content, Color color) {
+  Widget _buildSOAPSection(
+      String letter, String title, String content, Color color) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(20),
@@ -1583,9 +1585,10 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     );
   }
 
-  Widget _buildDetailSection(String title, String content, {bool isScripture = false}) {
+  Widget _buildDetailSection(String title, String content,
+      {bool isScripture = false}) {
     if (content.isEmpty) return const SizedBox.shrink();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1601,14 +1604,16 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
         Container(
           width: double.infinity,
           padding: isScripture ? const EdgeInsets.all(12) : EdgeInsets.zero,
-          decoration: isScripture ? BoxDecoration(
-            color: AppTheme.primaryPurple.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: AppTheme.primaryPurple.withOpacity(0.2),
-              width: 1,
-            ),
-          ) : null,
+          decoration: isScripture
+              ? BoxDecoration(
+                  color: AppTheme.primaryPurple.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: AppTheme.primaryPurple.withOpacity(0.2),
+                    width: 1,
+                  ),
+                )
+              : null,
           child: Text(
             content,
             style: TextStyle(
@@ -1659,51 +1664,53 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
 
   int _getCurrentStreak() {
     if (_notes.isEmpty) return 0;
-    
+
     final today = DateTime.now();
     final sortedNotes = List<DevotionNote>.from(_notes)
       ..sort((a, b) => b.date.compareTo(a.date));
-    
+
     int streak = 0;
     DateTime currentDate = today;
-    
+
     for (final note in sortedNotes) {
       final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
-      final checkDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
-      
-      if (noteDate.isAtSameMomentAs(checkDate) || 
-          noteDate.isAtSameMomentAs(checkDate.subtract(const Duration(days: 1)))) {
+      final checkDate =
+          DateTime(currentDate.year, currentDate.month, currentDate.day);
+
+      if (noteDate.isAtSameMomentAs(checkDate) ||
+          noteDate
+              .isAtSameMomentAs(checkDate.subtract(const Duration(days: 1)))) {
         streak++;
         currentDate = currentDate.subtract(const Duration(days: 1));
       } else {
         break;
       }
     }
-    
+
     return streak;
   }
 
   int _getLongestStreak() {
     if (_notes.isEmpty) return 0;
-    
+
     final sortedNotes = List<DevotionNote>.from(_notes)
       ..sort((a, b) => a.date.compareTo(b.date));
-    
+
     int maxStreak = 1;
     int currentStreak = 1;
-    
+
     for (int i = 1; i < sortedNotes.length; i++) {
       final prevDate = DateTime(
-        sortedNotes[i-1].date.year,
-        sortedNotes[i-1].date.month,
-        sortedNotes[i-1].date.day,
+        sortedNotes[i - 1].date.year,
+        sortedNotes[i - 1].date.month,
+        sortedNotes[i - 1].date.day,
       );
       final currentDate = DateTime(
         sortedNotes[i].date.year,
         sortedNotes[i].date.month,
         sortedNotes[i].date.day,
       );
-      
+
       if (currentDate.difference(prevDate).inDays <= 1) {
         currentStreak++;
       } else {
@@ -1711,17 +1718,17 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
         currentStreak = 1;
       }
     }
-    
+
     return maxStreak > currentStreak ? maxStreak : currentStreak;
   }
 
   int _getThisWeekCount() {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    
+
     return _notes.where((note) {
       return note.date.isAfter(weekStart.subtract(const Duration(days: 1))) &&
-             note.date.isBefore(now.add(const Duration(days: 1)));
+          note.date.isBefore(now.add(const Duration(days: 1)));
     }).length;
   }
 
@@ -1730,21 +1737,23 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
     final thisMonthStart = DateTime(now.year, now.month, 1);
     final lastMonthStart = DateTime(now.year, now.month - 1, 1);
     final lastMonthEnd = thisMonthStart.subtract(const Duration(days: 1));
-    
+
     final thisMonthCount = _notes.where((note) {
-      return note.date.isAfter(thisMonthStart.subtract(const Duration(days: 1))) &&
-             note.date.isBefore(now.add(const Duration(days: 1)));
+      return note.date
+              .isAfter(thisMonthStart.subtract(const Duration(days: 1))) &&
+          note.date.isBefore(now.add(const Duration(days: 1)));
     }).length;
-    
+
     final lastMonthCount = _notes.where((note) {
-      return note.date.isAfter(lastMonthStart.subtract(const Duration(days: 1))) &&
-             note.date.isBefore(lastMonthEnd.add(const Duration(days: 1)));
+      return note.date
+              .isAfter(lastMonthStart.subtract(const Duration(days: 1))) &&
+          note.date.isBefore(lastMonthEnd.add(const Duration(days: 1)));
     }).length;
-    
-    final growth = lastMonthCount > 0 
+
+    final growth = lastMonthCount > 0
         ? ((thisMonthCount - lastMonthCount) / lastMonthCount * 100).round()
         : 0;
-    
+
     return {
       'thisMonth': thisMonthCount,
       'lastMonth': lastMonthCount,
@@ -1754,7 +1763,7 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
 
   List<Map<String, dynamic>> _getFavoriteBooks() {
     final bookCounts = <String, int>{};
-    
+
     for (final note in _notes) {
       if (note.scriptureReference.isNotEmpty) {
         // Extract book name from reference (e.g., "창세기 1:1" -> "창세기")
@@ -1765,13 +1774,15 @@ class _DevotionNotesScreenState extends State<DevotionNotesScreen> {
         }
       }
     }
-    
+
     final sortedBooks = bookCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    
-    return sortedBooks.map((entry) => {
-      'book': entry.key,
-      'count': entry.value,
-    }).toList();
+
+    return sortedBooks
+        .map((entry) => {
+              'book': entry.key,
+              'count': entry.value,
+            })
+        .toList();
   }
 }

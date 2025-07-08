@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -34,7 +36,7 @@ android {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String? ?: ""
             keyPassword = keystoreProperties["keyPassword"] as String? ?: ""
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storeFile = keystoreProperties["storeFile"]?.let { File(it.toString()) }
             storePassword = keystoreProperties["storePassword"] as String? ?: ""
         }
     }
@@ -59,15 +61,9 @@ android {
                 signingConfigs.getByName("debug")  // Fallback for development
             }
             
-            // Enable shrinking, obfuscation, and optimization
-            isMinifyEnabled = true
-            isShrinkResources = true
-            
-            // ProGuard files for code obfuscation
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            // Disable minification to avoid R8 issues
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
