@@ -1,7 +1,7 @@
 name: grace_notes
 description: "Grace Notes - 기독교 예배노트 & 큐티 앱"
 publish_to: 'none'
-version: 1.0.1+4
+version: 1.0.1+7
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
@@ -26,6 +26,7 @@ dependencies:
   firebase_auth: ^5.6.2
   google_sign_in: ^7.1.0
   cloud_firestore: ^5.6.11
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:

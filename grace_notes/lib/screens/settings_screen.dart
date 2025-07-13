@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_theme.dart';
 import '../services/storage_service.dart';
 import '../services/auth_service.dart';
@@ -285,6 +286,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text('성경 데이터'),
             subtitle: Text('Korean Bible'),
           ),
+          ListTile(
+            leading:
+                const Icon(Icons.privacy_tip, color: AppTheme.primaryPurple),
+            title: const Text('개인정보처리방침'),
+            subtitle: const Text('개인정보 보호 정책을 확인하세요'),
+            trailing: const Icon(Icons.open_in_new, size: 16),
+            onTap: _openPrivacyPolicy,
+          ),
         ],
       ),
     );
@@ -406,7 +415,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _showFinalDeleteConfirmation() {
     final TextEditingController confirmController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -514,7 +523,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Delete user data from Firestore
       // Note: This is a simplified version. In production, you might want to use Cloud Functions
       // to properly clean up all user data
-      
+
       // Delete user account
       await AuthService.deleteAccount();
 
@@ -524,7 +533,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           MaterialPageRoute(builder: (context) => const LoginScreen()),
           (route) => false,
         );
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('계정이 성공적으로 삭제되었습니다.'),
@@ -547,6 +556,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
         setState(() {
           _isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _openPrivacyPolicy() async {
+    const url =
+        'https://emfla3.blogspot.com/2025/07/grace-note-privacy-policy.html';
+    try {
+      final Uri uri = Uri.parse(url);
+      print('Attempting to open URL: $url');
+      
+      final bool canLaunch = await canLaunchUrl(uri);
+      print('Can launch URL: $canLaunch');
+      
+      if (canLaunch) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+        print('Successfully launched URL');
+      } else {
+        print('Cannot launch URL - no suitable app found');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                '개인정보처리방침 페이지를 열 수 없습니다.\n웹 브라우저가 설치되어 있는지 확인해주세요.',
+              ),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 4),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error opening privacy policy: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('링크 열기 중 오류가 발생했습니다: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
       }
     }
   }

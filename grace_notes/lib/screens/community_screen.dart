@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../constants/app_theme.dart';
 import '../models/community_post.dart';
 import '../models/comment.dart';
@@ -18,11 +20,23 @@ class CommunityScreen extends StatefulWidget {
 class _CommunityScreenState extends State<CommunityScreen> {
   PostCategory? _selectedCategory;
   bool _isLoggedIn = false;
+  StreamSubscription<User?>? _authSubscription;
 
   @override
   void initState() {
     super.initState();
     _checkAuthStatus();
+    _setupAuthListener();
+  }
+
+  void _setupAuthListener() {
+    _authSubscription = AuthService.authStateChanges.listen((User? user) {
+      if (mounted) {
+        setState(() {
+          _isLoggedIn = user != null;
+        });
+      }
+    });
   }
 
   void _checkAuthStatus() {
@@ -37,15 +51,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
       MaterialPageRoute(
         builder: (context) => const LoginScreen(),
       ),
-    ).then((_) {
-      _checkAuthStatus(); // Refresh auth status when returning
-    });
+    );
+    // No need for manual refresh - auth state listener handles this automatically
   }
 
   Future<void> _handleSignOut() async {
     try {
       await AuthService.signOut();
-      _checkAuthStatus();
+      // Auth state listener will handle UI refresh automatically
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -1455,6 +1468,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 }
 

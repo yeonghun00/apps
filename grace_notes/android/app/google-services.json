@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1090241694132-5n5p1sbikneh869jjb5uuu7sdbqdfvp0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thousandemfla.grace_notes",
+            "certificate_hash": "de1598a54cf7d14e87fb473d17602e5930ce4bf9"
+          }
+        },
+        {
           "client_id": "1090241694132-604fsnt89g6u0llhjkj495sjhl976c24.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

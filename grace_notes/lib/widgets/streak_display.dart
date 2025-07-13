@@ -169,21 +169,25 @@ class _StreakDisplayState extends State<StreakDisplay>
 
       // Check each week going backwards
       for (int weekOffset = 0; weekOffset < 52; weekOffset++) {
-        DateTime weekStart = currentWeekStart.subtract(Duration(days: weekOffset * 7));
+        DateTime weekStart =
+            currentWeekStart.subtract(Duration(days: weekOffset * 7));
         DateTime weekEnd = weekStart.add(const Duration(days: 6));
-        
+
         bool hasNoteThisWeek = false;
-        
+
         for (final note in notes) {
-          final noteDate = DateTime(note.date.year, note.date.month, note.date.day);
-          
-          if ((noteDate.isAfter(weekStart) || noteDate.isAtSameMomentAs(weekStart)) &&
-              (noteDate.isBefore(weekEnd) || noteDate.isAtSameMomentAs(weekEnd))) {
+          final noteDate =
+              DateTime(note.date.year, note.date.month, note.date.day);
+
+          if ((noteDate.isAfter(weekStart) ||
+                  noteDate.isAtSameMomentAs(weekStart)) &&
+              (noteDate.isBefore(weekEnd) ||
+                  noteDate.isAtSameMomentAs(weekEnd))) {
             hasNoteThisWeek = true;
             break;
           }
         }
-        
+
         if (hasNoteThisWeek) {
           streak++;
         } else {
@@ -304,7 +308,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '연속 기록을 시작해보세요! ✨',
+                      '믿음의 여정을 시작해보세요! ✨',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
