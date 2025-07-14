@@ -111,8 +111,8 @@ class _SplashScreenState extends State<SplashScreen>
             end: Alignment.bottomRight,
             colors: [
               AppTheme.ivory,
-              AppTheme.cream.withOpacity(0.8),
-              AppTheme.lavender.withOpacity(0.3),
+              AppTheme.cream.withValues(alpha: 0.8),
+              AppTheme.lavender.withValues(alpha: 0.3),
             ],
           ),
         ),
@@ -179,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen>
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryPurple.withOpacity(0.1),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const CircularProgressIndicator(

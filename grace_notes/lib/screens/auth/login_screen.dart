@@ -44,8 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.primaryPurple.withOpacity(0.9),
-                      AppTheme.lavender.withOpacity(0.8),
+                      AppTheme.primaryPurple.withValues(alpha: 0.9),
+                      AppTheme.lavender.withValues(alpha: 0.8),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       '함께 기도하고 은혜를 나누어요',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.white.withOpacity(0.9),
+                        color: AppTheme.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],

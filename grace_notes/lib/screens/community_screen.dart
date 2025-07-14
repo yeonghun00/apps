@@ -83,8 +83,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppTheme.primaryPurple.withOpacity(0.9),
-                    AppTheme.lavender.withOpacity(0.8),
+                    AppTheme.primaryPurple.withValues(alpha: 0.9),
+                    AppTheme.lavender.withValues(alpha: 0.8),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
@@ -111,7 +111,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppTheme.white.withOpacity(0.9),
+                      color: AppTheme.white.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
@@ -252,13 +252,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryPurple.withOpacity(0.1),
-            AppTheme.lavender.withOpacity(0.1),
+            AppTheme.primaryPurple.withValues(alpha: 0.1),
+            AppTheme.lavender.withValues(alpha: 0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppTheme.primaryPurple.withOpacity(0.3),
+          color: AppTheme.primaryPurple.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -267,7 +267,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppTheme.primaryPurple.withOpacity(0.2),
+              color: AppTheme.primaryPurple.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
@@ -294,7 +294,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   '게시글 작성과 댓글 참여를 위해 로그인이 필요합니다',
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppTheme.textDark.withOpacity(0.7),
+                    color: AppTheme.textDark.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -396,7 +396,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
           children: [
             _buildCategoryChip('전체', null),
             const SizedBox(width: 8),
-            _buildCategoryChip('신앙나눔', PostCategory.faithSharing),
+            _buildCategoryChip('자유나눔', PostCategory.faithSharing),
             const SizedBox(width: 8),
             _buildCategoryChip('큐티나눔', PostCategory.devotionSharing),
             const SizedBox(width: 8),
@@ -424,7 +424,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         });
       },
       backgroundColor: AppTheme.white,
-      selectedColor: AppTheme.primaryPurple.withOpacity(0.2),
+      selectedColor: AppTheme.primaryPurple.withValues(alpha: 0.2),
       checkmarkColor: AppTheme.primaryPurple,
       labelStyle: TextStyle(
         color: isSelected ? AppTheme.primaryPurple : AppTheme.textDark,
@@ -437,7 +437,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     if (category == null) return '전체';
     switch (category) {
       case PostCategory.faithSharing:
-        return '신앙나눔';
+        return '자유나눔';
       case PostCategory.devotionSharing:
         return '큐티나눔';
       case PostCategory.sermonSharing:
@@ -465,14 +465,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppTheme.primaryPurple.withOpacity(0.8),
-                    AppTheme.lavender.withOpacity(0.9),
+                    AppTheme.primaryPurple.withValues(alpha: 0.8),
+                    AppTheme.lavender.withValues(alpha: 0.9),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryPurple.withOpacity(0.25),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.25),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),
@@ -592,7 +592,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: _getCategoryColor(post.category)
-                                .withOpacity(0.2),
+                                .withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -643,7 +643,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppTheme.sageGreen.withOpacity(0.2),
+                          color: AppTheme.sageGreen.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -664,14 +664,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             Icon(
                               Icons.volunteer_activism,
                               size: 16,
-                              color: AppTheme.primaryPurple.withOpacity(0.6),
+                              color: AppTheme.primaryPurple.withValues(alpha: 0.6),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               '아멘 ${post.amenCount}',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppTheme.primaryPurple.withOpacity(0.8),
+                                color: AppTheme.primaryPurple.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -682,14 +682,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             Icon(
                               Icons.comment_outlined,
                               size: 16,
-                              color: AppTheme.sageGreen.withOpacity(0.6),
+                              color: AppTheme.sageGreen.withValues(alpha: 0.6),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               '댓글 ${post.commentCount}',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppTheme.sageGreen.withOpacity(0.8),
+                                color: AppTheme.sageGreen.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -714,7 +714,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryPurple.withOpacity(0.05),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Center(
@@ -722,7 +722,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryPurple.withOpacity(0.9),
+                        color: AppTheme.primaryPurple.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Row(
@@ -854,7 +854,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: _getCategoryColor(currentPost.category)
-                                  .withOpacity(0.2),
+                                  .withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -880,7 +880,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.1),
+                                      color: Colors.red.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: const Icon(
@@ -912,7 +912,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     boxShadow: [
                                       BoxShadow(
                                         color: AppTheme.primaryPurple
-                                            .withOpacity(0.3),
+                                            .withValues(alpha: 0.3),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),
@@ -964,10 +964,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.lavender.withOpacity(0.1),
+                                  color: AppTheme.lavender.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: AppTheme.lavender.withOpacity(0.3),
+                                    color: AppTheme.lavender.withValues(alpha: 0.3),
                                   ),
                                 ),
                                 child: Column(
@@ -1162,13 +1162,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
+                      color: Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.close,
                       size: 14,
-                      color: Colors.red.withOpacity(0.7),
+                      color: Colors.red.withValues(alpha: 0.7),
                     ),
                   ),
                 ),
@@ -1192,10 +1192,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryPurple.withOpacity(0.1),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppTheme.primaryPurple.withOpacity(0.3),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
@@ -1236,12 +1236,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
         color: AppTheme.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryPurple.withOpacity(0.3),
+          color: AppTheme.primaryPurple.withValues(alpha: 0.3),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryPurple.withOpacity(0.1),
+            color: AppTheme.primaryPurple.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -1279,7 +1279,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(
-                    color: AppTheme.primaryPurple.withOpacity(0.3),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
                 ),
@@ -1403,7 +1403,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   Future<void> _toggleCommentAmen(Comment comment) async {
     try {
-      await FirebaseCommunityService.toggleCommentAmenReaction(comment.id);
+      await FirebaseCommunityService.toggleCommentAmenReaction(comment.id, comment.postId);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -1603,7 +1603,7 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
                             }
                           },
                           backgroundColor: AppTheme.cream,
-                          selectedColor: AppTheme.mint.withOpacity(0.3),
+                          selectedColor: AppTheme.mint.withValues(alpha: 0.3),
                           labelStyle: TextStyle(
                             color: _selectedCategory == category
                                 ? AppTheme.mint
@@ -1671,7 +1671,7 @@ class __CreatePostDialogState extends State<_CreatePostDialog> {
   String _getCategoryDisplayName(PostCategory category) {
     switch (category) {
       case PostCategory.faithSharing:
-        return '신앙나눔';
+        return '자유나눔';
       case PostCategory.devotionSharing:
         return '큐티나눔';
       case PostCategory.sermonSharing:

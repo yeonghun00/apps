@@ -335,6 +335,9 @@ class _SermonNoteFormScreenState extends State<SermonNoteFormScreen> {
   }
 
   Future<void> _saveNote() async {
+    // Hide keyboard first to prevent navigation issues
+    FocusScope.of(context).unfocus();
+    
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -366,7 +369,7 @@ class _SermonNoteFormScreenState extends State<SermonNoteFormScreen> {
 
       if (mounted) {
         // Show success dialog
-        final shouldReturn = await showDialog<bool>(
+        await showDialog<bool>(
           context: context,
           barrierDismissible: false,
           builder: (context) => NoteSuccessDialog(
@@ -374,14 +377,12 @@ class _SermonNoteFormScreenState extends State<SermonNoteFormScreen> {
             title: note.title,
             content: note.mainPoints,
             scriptureReference: note.scriptureReference,
-            onContinue: () {
-              Navigator.pop(context, true); // Close dialog and return true
-            },
           ),
         );
         
-        if (shouldReturn == true && mounted) {
-          Navigator.pop(context, note); // Close form and return updated note
+        // After dialog closes, navigate back to previous screen
+        if (mounted) {
+          Navigator.pop(context, note);
         }
       }
     } catch (e) {

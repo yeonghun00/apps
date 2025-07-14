@@ -92,7 +92,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.softGray.withOpacity(0.15),
+              color: AppTheme.softGray.withValues(alpha: 0.15),
               blurRadius: 20,
               offset: const Offset(0, -8),
             ),
@@ -114,7 +114,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             type: BottomNavigationBarType.fixed,
             backgroundColor: AppTheme.white,
             selectedItemColor: AppTheme.primaryPurple,
-            unselectedItemColor: AppTheme.softGray.withOpacity(0.6),
+            unselectedItemColor: AppTheme.softGray.withValues(alpha: 0.6),
             selectedLabelStyle: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 11,
@@ -139,7 +139,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                       size: 24,
                       color: _currentIndex == 0 
                           ? AppTheme.primaryPurple 
-                          : AppTheme.softGray.withOpacity(0.6),
+                          : AppTheme.softGray.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -158,7 +158,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                       size: 24,
                       color: _currentIndex == 1 
                           ? AppTheme.primaryPurple 
-                          : AppTheme.softGray.withOpacity(0.6),
+                          : AppTheme.softGray.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -177,7 +177,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                       size: 24,
                       color: _currentIndex == 2 
                           ? AppTheme.primaryPurple 
-                          : AppTheme.softGray.withOpacity(0.6),
+                          : AppTheme.softGray.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -196,7 +196,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                       size: 24,
                       color: _currentIndex == 3 
                           ? AppTheme.primaryPurple 
-                          : AppTheme.softGray.withOpacity(0.6),
+                          : AppTheme.softGray.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -215,7 +215,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                       size: 24,
                       color: _currentIndex == 4 
                           ? AppTheme.primaryPurple 
-                          : AppTheme.softGray.withOpacity(0.6),
+                          : AppTheme.softGray.withValues(alpha: 0.6),
                     ),
                   ),
                 ),

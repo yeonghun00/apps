@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../constants/app_theme.dart';
 import '../models/sermon_note.dart';
 import '../services/storage_service.dart';
@@ -128,8 +129,8 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryPurple.withOpacity(0.9),
-            AppTheme.lavender.withOpacity(0.8),
+            AppTheme.primaryPurple.withValues(alpha: 0.9),
+            AppTheme.lavender.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -142,7 +143,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.white.withOpacity(0.2),
+                  color: AppTheme.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -169,7 +170,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
                       '${_note.church} • ${_note.preacher}',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.white.withOpacity(0.9),
+                        color: AppTheme.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -178,7 +179,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
                       DateFormat('yyyy년 M월 d일').format(_note.date),
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppTheme.white.withOpacity(0.7),
+                        color: AppTheme.white.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -208,7 +209,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.sageGreen.withOpacity(0.2),
+                  color: AppTheme.sageGreen.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -233,7 +234,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppTheme.mint.withOpacity(0.3),
+                color: AppTheme.mint.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -254,7 +255,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
               decoration: BoxDecoration(
                 color: AppTheme.cream,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.sageGreen.withOpacity(0.3)),
+                border: Border.all(color: AppTheme.sageGreen.withValues(alpha: 0.3)),
               ),
               child: Text(
                 _note.scriptureText,
@@ -289,7 +290,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.2),
+                  color: AppTheme.primaryPurple.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -340,7 +341,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.mint.withOpacity(0.3),
+                  color: AppTheme.mint.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -391,7 +392,7 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.lavender.withOpacity(0.3),
+                  color: AppTheme.lavender.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -422,6 +423,27 @@ class _SermonNoteDetailScreenState extends State<SermonNoteDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _shareNote() {
+    final dateString = DateFormat('yyyy년 MM월 dd일').format(_note.date);
+    final shareText = '''
+🏛️ 설교노트
+
+📅 날짜: $dateString
+⛪ 교회: ${_note.church}
+👨‍💼 설교자: ${_note.preacher}
+📖 제목: ${_note.title}
+📜 본문: ${_note.scriptureReference}
+
+${_note.scriptureText.isNotEmpty ? '📖 성경 말씀:\n${_note.scriptureText}\n\n' : ''}${_note.mainPoints.isNotEmpty ? '🎯 주요 내용:\n${_note.mainPoints}\n\n' : ''}${_note.personalReflection.isNotEmpty ? '💭 개인 묵상:\n${_note.personalReflection}\n\n' : ''}${_note.applicationPoints.isNotEmpty ? '✅ 적용 포인트:\n${_note.applicationPoints}\n\n' : ''}${_note.prayerRequests.isNotEmpty ? '🙏 기도 제목:\n${_note.prayerRequests}\n\n' : ''}---
+Grace Notes 앱으로 작성
+    '''.trim();
+
+    Share.share(
+      shareText,
+      subject: '설교노트 - ${_note.title}',
     );
   }
 

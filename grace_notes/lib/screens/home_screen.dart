@@ -206,8 +206,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppTheme.sageGreen.withOpacity(0.8),
-              AppTheme.mint.withOpacity(0.7),
+              AppTheme.sageGreen.withValues(alpha: 0.8),
+              AppTheme.mint.withValues(alpha: 0.7),
             ],
           ),
           borderRadius: BorderRadius.circular(16),
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.white.withOpacity(0.2),
+                    color: AppTheme.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -269,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               '- ${_featuredPost!.authorName}',
               style: TextStyle(
                 fontSize: 12,
-                color: AppTheme.white.withOpacity(0.8),
+                color: AppTheme.white.withValues(alpha: 0.8),
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -285,8 +285,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryPurple.withOpacity(0.9),
-            AppTheme.lavender.withOpacity(0.8),
+            AppTheme.primaryPurple.withValues(alpha: 0.9),
+            AppTheme.lavender.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -327,18 +327,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryPurple.withOpacity(0.08),
-            AppTheme.lavender.withOpacity(0.12),
+            AppTheme.primaryPurple.withValues(alpha: 0.08),
+            AppTheme.lavender.withValues(alpha: 0.12),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppTheme.primaryPurple.withOpacity(0.15),
+          color: AppTheme.primaryPurple.withValues(alpha: 0.15),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryPurple.withOpacity(0.08),
+            color: AppTheme.primaryPurple.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -359,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryPurple.withOpacity(0.25),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.25),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -390,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       _getFormattedDate(),
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.textDark.withOpacity(0.6),
+                        color: AppTheme.textDark.withValues(alpha: 0.6),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -414,10 +414,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppTheme.primaryPurple.withOpacity(0.1),
+                  color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                   width: 1,
                 ),
               ),
@@ -466,13 +466,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppTheme.primaryPurple.withOpacity(0.15),
-                        AppTheme.lavender.withOpacity(0.2),
+                        AppTheme.primaryPurple.withValues(alpha: 0.15),
+                        AppTheme.lavender.withValues(alpha: 0.2),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppTheme.primaryPurple.withOpacity(0.3),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -480,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     isSunday ? '주일이에요! 🌅' : '오늘도 말씀과 함께해요! 🌇',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppTheme.primaryPurple,
+                      color: AppTheme.lavender,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -494,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             title: '설교노트 작성하기',
             subtitle:
                 isSunday ? '오늘 주일 예배에서 받은 은혜를 기록해보세요' : '설교 말씀을 통해 받은 은혜를 나누어요',
-            color: AppTheme.primaryPurple,
+            color: AppTheme.lavender,
             isHighlighted: isSunday,
             onTap: () async {
               final result = await Navigator.push(
@@ -547,74 +547,49 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
-        decoration: isHighlighted
-            ? BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    color.withOpacity(0.12),
-                    color.withOpacity(0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: color.withOpacity(0.4),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withOpacity(0.15),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              )
-            : BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: color.withOpacity(0.15),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.softGray.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withValues(alpha: 0.12),
+              color.withValues(alpha: 0.08),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: color.withValues(alpha: 0.4),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
         child: Row(
           children: [
             Container(
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                gradient: isHighlighted
-                    ? LinearGradient(
-                        colors: [color, color.withOpacity(0.8)],
-                      )
-                    : LinearGradient(
-                        colors: [
-                          color.withOpacity(0.15),
-                          color.withOpacity(0.1)
-                        ],
-                      ),
+                gradient: LinearGradient(
+                  colors: [color, color.withValues(alpha: 0.8)],
+                ),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: isHighlighted
-                    ? [
-                        BoxShadow(
-                          color: color.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
-                    : null,
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Icon(
                 icon,
-                color: isHighlighted ? Colors.white : color,
+                color: Colors.white,
                 size: 28,
               ),
             ),
@@ -637,7 +612,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppTheme.textDark.withOpacity(0.7),
+                      color: AppTheme.textDark.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w500,
                       height: 1.4,
                     ),
@@ -649,7 +624,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -714,19 +689,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.primaryPurple.withOpacity(0.06),
-                      AppTheme.lavender.withOpacity(0.12),
-                      AppTheme.cream.withOpacity(0.08),
+                      AppTheme.primaryPurple.withValues(alpha: 0.06),
+                      AppTheme.lavender.withValues(alpha: 0.12),
+                      AppTheme.cream.withValues(alpha: 0.08),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: AppTheme.primaryPurple.withOpacity(0.15),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.15),
                     width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryPurple.withOpacity(0.08),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.08),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -740,14 +715,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppTheme.primaryPurple.withOpacity(0.8),
-                            AppTheme.deepLavender.withOpacity(0.9),
+                            AppTheme.primaryPurple.withValues(alpha: 0.8),
+                            AppTheme.deepLavender.withValues(alpha: 0.9),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: AppTheme.primaryPurple.withOpacity(0.25),
+                            color: AppTheme.primaryPurple.withValues(alpha: 0.25),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),
@@ -938,7 +913,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
+                color: color.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -967,7 +942,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     subtitle,
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppTheme.textDark.withOpacity(0.7),
+                      color: AppTheme.textDark.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

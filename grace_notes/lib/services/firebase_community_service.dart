@@ -273,8 +273,9 @@ class FirebaseCommunityService {
   // Get comments for a post
   static Stream<List<Comment>> getCommentsStream(String postId) {
     return _firestore
+        .collection(_postsCollection)
+        .doc(postId)
         .collection(_commentsCollection)
-        .where('postId', isEqualTo: postId)
         .orderBy('createdAt', descending: false)
         .snapshots()
         .map((snapshot) {
@@ -305,6 +306,8 @@ class FirebaseCommunityService {
       );
 
       final docRef = await _firestore
+          .collection(_postsCollection)
+          .doc(postId)
           .collection(_commentsCollection)
           .add(comment.toJson());
 
@@ -328,6 +331,8 @@ class FirebaseCommunityService {
 
       // Check if user owns the comment
       final doc = await _firestore
+          .collection(_postsCollection)
+          .doc(postId)
           .collection(_commentsCollection)
           .doc(commentId)
           .get();
@@ -344,6 +349,8 @@ class FirebaseCommunityService {
       }
 
       await _firestore
+          .collection(_postsCollection)
+          .doc(postId)
           .collection(_commentsCollection)
           .doc(commentId)
           .delete();
@@ -357,7 +364,7 @@ class FirebaseCommunityService {
   }
 
   // Toggle Amen reaction on comment
-  static Future<bool> toggleCommentAmenReaction(String commentId) async {
+  static Future<bool> toggleCommentAmenReaction(String commentId, String postId) async {
     try {
       final user = AuthService.currentUser;
       if (user == null) {
@@ -374,7 +381,7 @@ class FirebaseCommunityService {
       if (reactionDoc.exists) {
         // Remove reaction
         await reactionRef.delete();
-        await _updateCommentAmenCount(commentId, -1);
+        await _updateCommentAmenCount(commentId, postId, -1);
         return false;
       } else {
         // Add reaction
@@ -384,7 +391,7 @@ class FirebaseCommunityService {
           'type': 'amen',
           'createdAt': FieldValue.serverTimestamp(),
         });
-        await _updateCommentAmenCount(commentId, 1);
+        await _updateCommentAmenCount(commentId, postId, 1);
         return true;
       }
     } catch (e) {
@@ -409,9 +416,11 @@ class FirebaseCommunityService {
   }
 
   // Update comment amen count
-  static Future<void> _updateCommentAmenCount(String commentId, int delta) async {
+  static Future<void> _updateCommentAmenCount(String commentId, String postId, int delta) async {
     try {
       await _firestore
+          .collection(_postsCollection)
+          .doc(postId)
           .collection(_commentsCollection)
           .doc(commentId)
           .update({

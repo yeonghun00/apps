@@ -84,6 +84,4 @@ dependencies {
     // Firebase Firestore
     implementation("com.google.firebase:firebase-firestore")
     
-    // Firebase Analytics (optional but recommended)
-    implementation("com.google.firebase:firebase-analytics")
 }

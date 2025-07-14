@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../constants/app_theme.dart';
 import '../models/sermon_note.dart';
 import '../services/storage_service.dart';
@@ -291,7 +292,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: AppTheme.softGray.withOpacity(0.1),
+              color: AppTheme.softGray.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -337,14 +338,14 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppTheme.primaryPurple.withOpacity(0.2),
-                    AppTheme.lavender.withOpacity(0.3),
+                    AppTheme.primaryPurple.withValues(alpha: 0.2),
+                    AppTheme.lavender.withValues(alpha: 0.3),
                   ],
                 ),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryPurple.withOpacity(0.1),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -387,7 +388,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryPurple.withOpacity(0.3),
+                    color: AppTheme.primaryPurple.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -431,7 +432,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                 color: AppTheme.cream,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppTheme.primaryPurple.withOpacity(0.2),
+                  color: AppTheme.primaryPurple.withValues(alpha: 0.2),
                 ),
               ),
               child: Row(
@@ -439,7 +440,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryPurple.withOpacity(0.1),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -498,15 +499,15 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryPurple.withOpacity(0.8),
-            AppTheme.lavender.withOpacity(0.9),
-            AppTheme.mint.withOpacity(0.6),
+            AppTheme.primaryPurple.withValues(alpha: 0.8),
+            AppTheme.lavender.withValues(alpha: 0.9),
+            AppTheme.mint.withValues(alpha: 0.6),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryPurple.withOpacity(0.2),
+            color: AppTheme.primaryPurple.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -520,7 +521,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: AppTheme.white.withOpacity(0.25),
+                  color: AppTheme.white.withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Icon(
@@ -547,7 +548,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                       '예배를 통해 받은 $daysInWorship일의 은혜',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.white.withOpacity(0.9),
+                        color: AppTheme.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],
@@ -577,10 +578,10 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppTheme.white.withOpacity(0.2),
+          color: AppTheme.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: AppTheme.white.withOpacity(0.3),
+            color: AppTheme.white.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -600,7 +601,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               title,
               style: TextStyle(
                 fontSize: 10,
-                color: AppTheme.white.withOpacity(0.8),
+                color: AppTheme.white.withValues(alpha: 0.8),
               ),
             ),
           ],
@@ -622,7 +623,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.cream.withOpacity(0.5),
+            color: AppTheme.cream.withValues(alpha: 0.5),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -636,7 +637,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.15),
+                  color: AppTheme.primaryPurple.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -693,10 +694,10 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
       decoration: BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.4), width: 1.5),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -742,7 +743,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.cream.withOpacity(0.5),
+            color: AppTheme.cream.withValues(alpha: 0.5),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -756,7 +757,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.lavender.withOpacity(0.3),
+                  color: AppTheme.lavender.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -796,17 +797,18 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryPurple.withOpacity(0.15),
+                          color: AppTheme.primaryPurple.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                              color: AppTheme.primaryPurple.withOpacity(0.5),
-                              width: 1),
+                              color:
+                                  AppTheme.primaryPurple.withValues(alpha: 0.7),
+                              width: 1.5),
                         ),
                         child: Text(
                           '${church['name']} (${church['count']}회)',
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppTheme.primaryPurple.withOpacity(0.9),
+                            color: AppTheme.primaryPurple,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -834,17 +836,17 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: AppTheme.sageGreen.withOpacity(0.15),
+                          color: AppTheme.sageGreen.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                              color: AppTheme.sageGreen.withOpacity(0.5),
-                              width: 1),
+                              color: AppTheme.sageGreen.withValues(alpha: 0.7),
+                              width: 1.5),
                         ),
                         child: Text(
                           '${preacher['name']} (${preacher['count']}회)',
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppTheme.sageGreen.withOpacity(0.9),
+                            color: AppTheme.sageGreen,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -905,8 +907,8 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: monthlyData['growth']! > 0
-                        ? AppTheme.primaryPurple.withOpacity(0.2)
-                        : AppTheme.softGray.withOpacity(0.2),
+                        ? AppTheme.primaryPurple.withValues(alpha: 0.2)
+                        : AppTheme.softGray.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -969,7 +971,8 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                   boxShadow: isRecent
                       ? [
                           BoxShadow(
-                            color: AppTheme.primaryPurple.withOpacity(0.3),
+                            color:
+                                AppTheme.primaryPurple.withValues(alpha: 0.3),
                             blurRadius: 4,
                             spreadRadius: 1,
                           ),
@@ -992,12 +995,12 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isRecent
-                      ? AppTheme.primaryPurple.withOpacity(0.05)
+                      ? AppTheme.primaryPurple.withValues(alpha: 0.05)
                       : AppTheme.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isRecent
-                        ? AppTheme.primaryPurple.withOpacity(0.3)
+                        ? AppTheme.primaryPurple.withValues(alpha: 0.3)
                         : AppTheme.cream,
                   ),
                 ),
@@ -1098,7 +1101,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.1),
+                  color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -1126,7 +1129,17 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
       decoration: BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.cream),
+        border: Border.all(
+          color: AppTheme.primaryPurple.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryPurple.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -1206,7 +1219,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryPurple.withOpacity(0.2),
+                        color: AppTheme.primaryPurple.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -1258,7 +1271,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppTheme.sageGreen.withOpacity(0.2),
+                      color: AppTheme.sageGreen.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -1312,7 +1325,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryPurple.withOpacity(0.1),
+              color: AppTheme.primaryPurple.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, -5),
             ),
@@ -1328,8 +1341,8 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppTheme.primaryPurple.withOpacity(0.1),
-                    AppTheme.lavender.withOpacity(0.2),
+                    AppTheme.primaryPurple.withValues(alpha: 0.1),
+                    AppTheme.lavender.withValues(alpha: 0.2),
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
@@ -1344,7 +1357,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: AppTheme.softGray.withOpacity(0.3),
+                      color: AppTheme.softGray.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -1354,7 +1367,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryPurple.withOpacity(0.2),
+                          color: AppTheme.primaryPurple.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Icon(
@@ -1381,7 +1394,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                               '${note.church} • ${note.preacher}',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppTheme.primaryPurple.withOpacity(0.7),
+                                color: AppTheme.darkPurple,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -1394,7 +1407,8 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryPurple.withOpacity(0.1),
+                              color:
+                                  AppTheme.primaryPurple.withValues(alpha: 0.1),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -1403,6 +1417,16 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            IconButton(
+                              icon: const Icon(Icons.share,
+                                  color: AppTheme.primaryPurple),
+                              onPressed: () => _shareSermonNote(note),
+                            ),
+                            Container(
+                              width: 1,
+                              height: 20,
+                              color: AppTheme.cream,
+                            ),
                             IconButton(
                               icon: const Icon(Icons.edit,
                                   color: AppTheme.primaryPurple),
@@ -1496,18 +1520,19 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
     if (content.isEmpty) return const SizedBox.shrink();
 
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: color.withOpacity(0.2),
+          color: color.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.05),
+            color: color.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1540,6 +1565,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
 
   Widget _buildScriptureSection(String scriptureText) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -1547,13 +1573,13 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.sageGreen.withOpacity(0.1),
-            AppTheme.mint.withOpacity(0.15),
+            AppTheme.sageGreen.withValues(alpha: 0.1),
+            AppTheme.mint.withValues(alpha: 0.15),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.sageGreen.withOpacity(0.3),
+          color: AppTheme.sageGreen.withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -1565,7 +1591,7 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.sageGreen.withOpacity(0.2),
+                  color: AppTheme.sageGreen.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -1792,5 +1818,27 @@ class _SermonNotesScreenState extends State<SermonNotesScreen> {
               'count': entry.value,
             })
         .toList();
+  }
+
+  void _shareSermonNote(SermonNote note) {
+    final dateString = DateFormat('yyyy년 MM월 dd일').format(note.date);
+    final shareText = '''
+🏛️ 설교노트
+
+📅 날짜: $dateString
+⛪ 교회: ${note.church}
+👨‍💼 설교자: ${note.preacher}
+📖 제목: ${note.title}
+📜 본문: ${note.scriptureReference}
+
+${note.scriptureText.isNotEmpty ? '📖 성경 말씀:\n${note.scriptureText}\n\n' : ''}${note.mainPoints.isNotEmpty ? '🎯 주요 내용:\n${note.mainPoints}\n\n' : ''}${note.personalReflection.isNotEmpty ? '💭 개인 묵상:\n${note.personalReflection}\n\n' : ''}${note.applicationPoints.isNotEmpty ? '✅ 적용 포인트:\n${note.applicationPoints}\n\n' : ''}${note.prayerRequests.isNotEmpty ? '🙏 기도 제목:\n${note.prayerRequests}\n\n' : ''}---
+Grace Notes 앱으로 작성
+    '''
+        .trim();
+
+    Share.share(
+      shareText,
+      subject: '설교노트 - ${note.title}',
+    );
   }
 }

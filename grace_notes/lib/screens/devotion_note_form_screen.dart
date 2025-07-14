@@ -127,8 +127,8 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.sageGreen.withOpacity(0.8),
-            AppTheme.mint.withOpacity(0.6),
+            AppTheme.sageGreen.withValues(alpha: 0.8),
+            AppTheme.mint.withValues(alpha: 0.6),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -245,7 +245,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppTheme.darkPurple.withOpacity(0.2),
+                  color: AppTheme.darkPurple.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: const Text(
@@ -345,7 +345,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
+                  color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -386,7 +386,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
               hintText: hint,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: color.withOpacity(0.3)),
+                borderSide: BorderSide(color: color.withValues(alpha: 0.3)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -394,7 +394,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: color.withOpacity(0.3)),
+                borderSide: BorderSide(color: color.withValues(alpha: 0.3)),
               ),
             ),
             maxLines: 4,
@@ -425,6 +425,9 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
   }
 
   Future<void> _saveNote() async {
+    // Hide keyboard first to prevent navigation issues
+    FocusScope.of(context).unfocus();
+    
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -451,7 +454,7 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
 
       if (mounted) {
         // Show success dialog
-        final shouldReturn = await showDialog<bool>(
+        await showDialog<bool>(
           context: context,
           barrierDismissible: false,
           builder: (context) => NoteSuccessDialog(
@@ -459,14 +462,12 @@ class _DevotionNoteFormScreenState extends State<DevotionNoteFormScreen> {
             title: note.title.isNotEmpty ? note.title : note.scriptureReference,
             content: note.observation,
             scriptureReference: note.scriptureReference,
-            onContinue: () {
-              Navigator.pop(context, true); // Close dialog and return true
-            },
           ),
         );
         
-        if (shouldReturn == true && mounted) {
-          Navigator.pop(context, note); // Close form and return updated note
+        // After dialog closes, navigate back to previous screen
+        if (mounted) {
+          Navigator.pop(context, note);
         }
       }
     } catch (e) {

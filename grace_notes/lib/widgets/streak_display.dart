@@ -259,18 +259,18 @@ class _StreakDisplayState extends State<StreakDisplay>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.lavender.withOpacity(0.8),
-            AppTheme.cream.withOpacity(0.9),
+            AppTheme.lavender.withValues(alpha: 0.8),
+            AppTheme.cream.withValues(alpha: 0.9),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppTheme.primaryPurple.withOpacity(0.3),
+          color: AppTheme.primaryPurple.withValues(alpha: 0.3),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryPurple.withOpacity(0.15),
+            color: AppTheme.primaryPurple.withValues(alpha: 0.15),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -290,7 +290,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryPurple.withOpacity(0.3),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -320,7 +320,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                       '큐티와 설교노트를 꾸준히 작성해보세요 💜',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.textDark.withOpacity(0.8),
+                        color: AppTheme.textDark.withValues(alpha: 0.8),
                         fontWeight: FontWeight.w500,
                         height: 1.4,
                       ),
@@ -347,12 +347,12 @@ class _StreakDisplayState extends State<StreakDisplay>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.sageGreen.withOpacity(0.4),
+            color: AppTheme.sageGreen.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
           BoxShadow(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             blurRadius: 5,
             offset: const Offset(-5, -5),
           ),
@@ -368,14 +368,14 @@ class _StreakDisplayState extends State<StreakDisplay>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.white.withOpacity(0.3),
-                      Colors.white.withOpacity(0.1),
+                      Colors.white.withValues(alpha: 0.3),
+                      Colors.white.withValues(alpha: 0.1),
                     ],
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
@@ -411,8 +411,8 @@ class _StreakDisplayState extends State<StreakDisplay>
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.white.withOpacity(0.4),
-                                  Colors.white.withOpacity(0.2),
+                                  Colors.white.withValues(alpha: 0.4),
+                                  Colors.white.withValues(alpha: 0.2),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(12),
@@ -434,7 +434,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                       _getDevotionMessage(),
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withOpacity(0.95),
+                        color: Colors.white.withValues(alpha: 0.95),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -447,8 +447,8 @@ class _StreakDisplayState extends State<StreakDisplay>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.white.withOpacity(0.3),
-                        Colors.white.withOpacity(0.1),
+                        Colors.white.withValues(alpha: 0.3),
+                        Colors.white.withValues(alpha: 0.1),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -478,12 +478,12 @@ class _StreakDisplayState extends State<StreakDisplay>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryPurple.withOpacity(0.4),
+            color: AppTheme.primaryPurple.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
           BoxShadow(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             blurRadius: 5,
             offset: const Offset(-5, -5),
           ),
@@ -499,14 +499,14 @@ class _StreakDisplayState extends State<StreakDisplay>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.white.withOpacity(0.3),
-                      Colors.white.withOpacity(0.1),
+                      Colors.white.withValues(alpha: 0.3),
+                      Colors.white.withValues(alpha: 0.1),
                     ],
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
@@ -542,8 +542,8 @@ class _StreakDisplayState extends State<StreakDisplay>
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.white.withOpacity(0.4),
-                                  Colors.white.withOpacity(0.2),
+                                  Colors.white.withValues(alpha: 0.4),
+                                  Colors.white.withValues(alpha: 0.2),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(12),
@@ -565,7 +565,7 @@ class _StreakDisplayState extends State<StreakDisplay>
                       _getSermonMessage(),
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withOpacity(0.95),
+                        color: Colors.white.withValues(alpha: 0.95),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -578,8 +578,8 @@ class _StreakDisplayState extends State<StreakDisplay>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.white.withOpacity(0.3),
-                        Colors.white.withOpacity(0.1),
+                        Colors.white.withValues(alpha: 0.3),
+                        Colors.white.withValues(alpha: 0.1),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -695,7 +695,7 @@ class SparklePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.8)
+      ..color = Colors.white.withValues(alpha: 0.8)
       ..style = PaintingStyle.fill;
 
     // Create more sparkles for a magical effect
@@ -717,7 +717,7 @@ class SparklePainter extends CustomPainter {
           (math.sin(phase * math.pi * 2) * 0.5 + 0.5).clamp(0.0, 1.0);
       final sparkleSize = 4.0 * opacity;
 
-      paint.color = Colors.white.withOpacity(opacity * 0.9);
+      paint.color = Colors.white.withValues(alpha: opacity * 0.9);
 
       // Draw star-shaped sparkles
       _drawStar(canvas, offset, sparkleSize, paint);
@@ -755,7 +755,7 @@ class FloatingParticlesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppTheme.primaryPurple.withOpacity(0.1)
+      ..color = AppTheme.primaryPurple.withValues(alpha: 0.1)
       ..style = PaintingStyle.fill;
 
     // Create floating particles
@@ -775,7 +775,7 @@ class FloatingParticlesPainter extends CustomPainter {
       final opacity = (math.sin(phase * math.pi) * 0.3 + 0.1).clamp(0.0, 0.4);
       final particleSize = 3.0 + math.sin(phase * math.pi * 2) * 2;
 
-      paint.color = AppTheme.primaryPurple.withOpacity(opacity);
+      paint.color = AppTheme.primaryPurple.withValues(alpha: opacity);
 
       canvas.drawCircle(
         Offset(offset.dx, offset.dy + floatY),

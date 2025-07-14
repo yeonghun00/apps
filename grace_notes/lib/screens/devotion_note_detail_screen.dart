@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../constants/app_theme.dart';
 import '../models/devotion_note.dart';
 import '../services/storage_service.dart';
@@ -125,8 +126,8 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.sageGreen.withOpacity(0.9),
-            AppTheme.mint.withOpacity(0.8),
+            AppTheme.sageGreen.withValues(alpha: 0.9),
+            AppTheme.mint.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -139,7 +140,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.white.withOpacity(0.2),
+                  color: AppTheme.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -168,7 +169,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
                       DateFormat('yyyy년 M월 d일').format(_note.date),
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.white.withOpacity(0.9),
+                        color: AppTheme.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],
@@ -198,7 +199,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.sageGreen.withOpacity(0.2),
+                  color: AppTheme.sageGreen.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -223,7 +224,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppTheme.mint.withOpacity(0.3),
+                color: AppTheme.mint.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -244,7 +245,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
               decoration: BoxDecoration(
                 color: AppTheme.cream,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.sageGreen.withOpacity(0.3)),
+                border: Border.all(color: AppTheme.sageGreen.withValues(alpha: 0.3)),
               ),
               child: Text(
                 _note.scriptureText,
@@ -320,10 +321,10 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
       decoration: BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2), width: 2),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.softGray.withOpacity(0.1),
+            color: AppTheme.softGray.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -341,8 +342,8 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      color.withOpacity(0.8),
-                      color.withOpacity(0.6),
+                      color.withValues(alpha: 0.8),
+                      color.withValues(alpha: 0.6),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
@@ -370,7 +371,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
                       subtitle,
                       style: TextStyle(
                         fontSize: 12,
-                        color: color.withOpacity(0.7),
+                        color: color.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -384,7 +385,7 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.05),
+              color: color.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -398,6 +399,27 @@ class _DevotionNoteDetailScreenState extends State<DevotionNoteDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _shareNote() {
+    final dateString = DateFormat('yyyy년 MM월 dd일').format(_note.date);
+    final title = _note.title.isNotEmpty ? _note.title : _note.scriptureReference;
+    
+    final shareText = '''
+📖 큐티노트
+
+📅 날짜: $dateString
+🏷️ 제목: $title
+📜 본문: ${_note.scriptureReference}
+
+${_note.scriptureText.isNotEmpty ? '📖 성경 말씀:\n${_note.scriptureText}\n\n' : ''}${_note.observation.isNotEmpty ? '👀 관찰 (Observation):\n${_note.observation}\n\n' : ''}${_note.interpretation.isNotEmpty ? '💡 해석 (Interpretation):\n${_note.interpretation}\n\n' : ''}${_note.application.isNotEmpty ? '✅ 적용 (Application):\n${_note.application}\n\n' : ''}${_note.prayer.isNotEmpty ? '🙏 기도 (Prayer):\n${_note.prayer}\n\n' : ''}---
+Grace Notes 앱으로 작성
+    '''.trim();
+
+    Share.share(
+      shareText,
+      subject: '큐티노트 - $title',
     );
   }
 

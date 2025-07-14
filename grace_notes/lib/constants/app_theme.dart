@@ -23,16 +23,16 @@ class AppTheme {
     primarySwatch: MaterialColor(
       primaryPurple.value,
       {
-        50: primaryPurple.withOpacity(0.1),
-        100: primaryPurple.withOpacity(0.2),
-        200: primaryPurple.withOpacity(0.3),
-        300: primaryPurple.withOpacity(0.4),
-        400: primaryPurple.withOpacity(0.5),
+        50: primaryPurple.withValues(alpha: 0.1),
+        100: primaryPurple.withValues(alpha: 0.2),
+        200: primaryPurple.withValues(alpha: 0.3),
+        300: primaryPurple.withValues(alpha: 0.4),
+        400: primaryPurple.withValues(alpha: 0.5),
         500: primaryPurple,
-        600: primaryPurple.withOpacity(0.7),
-        700: primaryPurple.withOpacity(0.8),
-        800: primaryPurple.withOpacity(0.9),
-        900: primaryPurple.withOpacity(1.0),
+        600: primaryPurple.withValues(alpha: 0.7),
+        700: primaryPurple.withValues(alpha: 0.8),
+        800: primaryPurple.withValues(alpha: 0.9),
+        900: primaryPurple.withValues(alpha: 1.0),
       },
     ),
     scaffoldBackgroundColor: ivory,
@@ -47,7 +47,7 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: white,
       elevation: 4,
-      shadowColor: softGray.withOpacity(0.2),
+      shadowColor: softGray.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -132,7 +132,7 @@ class AppTheme {
     borderRadius: BorderRadius.circular(16),
     boxShadow: [
       BoxShadow(
-        color: softGray.withOpacity(0.1),
+        color: softGray.withValues(alpha: 0.1),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),
@@ -144,8 +144,8 @@ class AppTheme {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        primaryPurple.withOpacity(0.8),
-        sageGreen.withOpacity(0.6),
+        primaryPurple.withValues(alpha: 0.8),
+        sageGreen.withValues(alpha: 0.6),
       ],
     ),
     borderRadius: BorderRadius.circular(16),

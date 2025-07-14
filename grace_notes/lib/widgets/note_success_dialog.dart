@@ -12,7 +12,6 @@ class NoteSuccessDialog extends StatefulWidget {
   final String title;
   final String content;
   final String scriptureReference;
-  final VoidCallback? onContinue;
 
   const NoteSuccessDialog({
     super.key,
@@ -20,7 +19,6 @@ class NoteSuccessDialog extends StatefulWidget {
     required this.title,
     required this.content,
     required this.scriptureReference,
-    this.onContinue,
   });
 
   @override
@@ -76,12 +74,13 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
       final lastShownDate = settings[lastShownKey];
 
       if (lastShownDate == todayString) {
-        // Already shown today, close dialog without showing
-        if (mounted) {
-          Navigator.of(context).pop(true); // Return true to indicate success
-          widget.onContinue?.call();
-        }
-        return;
+        // Already shown today, show simple success message without streak
+        setState(() {
+          _currentStreak = 0; // Don't show streak animation
+          _isNewStreakRecord = false;
+          _isSpecialMilestone = false;
+        });
+        return; // Continue to show the dialog normally
       }
 
       // Handle different streak types
@@ -284,13 +283,13 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                     border: _isSpecialMilestone && _milestoneType.isNotEmpty
                         ? _getMilestoneBorder()
                         : Border.all(
-                            color: AppTheme.primaryPurple.withOpacity(0.3), // 연보라 border
+                            color: AppTheme.primaryPurple.withValues(alpha: 0.3), // 연보라 border
                             width: 2),
                     boxShadow: [
                       BoxShadow(
                         color: _isSpecialMilestone && _milestoneType.isNotEmpty
                             ? _getMilestoneGlowColor()
-                            : AppTheme.primaryPurple.withOpacity(0.2), // 연보라 glow for normal
+                            : AppTheme.primaryPurple.withValues(alpha: 0.2), // 연보라 glow for normal
                         blurRadius:
                             _isSpecialMilestone && _milestoneType.isNotEmpty
                                 ? 30
@@ -380,7 +379,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                   style: TextStyle(
                     fontSize: 16,
                     color: _isSpecialMilestone && _milestoneType.isNotEmpty
-                        ? Colors.white.withOpacity(0.9)
+                        ? Colors.white.withValues(alpha: 0.9)
                         : AppTheme.softGray,
                   ),
                 ).animate().fadeIn(delay: 500.ms, duration: 600.ms),
@@ -417,12 +416,13 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop(true); // Return true to indicate success
-                          widget.onContinue?.call();
+                          if (mounted) {
+                            Navigator.of(context).pop(true); // Return true to indicate success
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _isSpecialMilestone && _milestoneType.isNotEmpty
-                              ? Colors.white.withOpacity(0.9)
+                              ? Colors.white.withValues(alpha: 0.9)
                               : AppTheme.darkPurple,
                           foregroundColor: _isSpecialMilestone && _milestoneType.isNotEmpty
                               ? _getMilestoneTextColor()
@@ -450,7 +450,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: _isSpecialMilestone
-                        ? Colors.white.withOpacity(0.2)
+                        ? Colors.white.withValues(alpha: 0.2)
                         : AppTheme.cream,
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -459,7 +459,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                     style: TextStyle(
                       fontSize: 12,
                       color: _isSpecialMilestone && _milestoneType.isNotEmpty
-                          ? Colors.white.withOpacity(0.95)
+                          ? Colors.white.withValues(alpha: 0.95)
                           : AppTheme.textDark, // Changed from softGray to textDark for better visibility
                       fontStyle: FontStyle.italic,
                     ),
@@ -480,7 +480,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
         width: 80,
         height: 80,
         decoration: BoxDecoration(
-          color: AppTheme.darkGreen.withOpacity(0.1),
+          color: AppTheme.darkGreen.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -534,14 +534,14 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                   ? _getMilestoneGradient()
                   : LinearGradient(
                       colors: [
-                        AppTheme.darkPurple.withOpacity(0.1),
-                        AppTheme.darkMint.withOpacity(0.1),
+                        AppTheme.darkPurple.withValues(alpha: 0.1),
+                        AppTheme.darkMint.withValues(alpha: 0.1),
                       ],
                     ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: _isSpecialMilestone && _milestoneType.isNotEmpty
-                    ? Colors.white.withOpacity(0.3)
+                    ? Colors.white.withValues(alpha: 0.3)
                     : (_isNewStreakRecord
                         ? AppTheme.darkGreen
                         : AppTheme.darkPurple),
@@ -685,15 +685,15 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
   Color _getMilestoneGlowColor() {
     switch (_milestoneType) {
       case 'fire':
-        return const Color(0xFFFF4500).withOpacity(0.5);
+        return const Color(0xFFFF4500).withValues(alpha: 0.5);
       case 'starfall':
-        return const Color(0xFF4169E1).withOpacity(0.5);
+        return const Color(0xFF4169E1).withValues(alpha: 0.5);
       case 'crystal':
-        return const Color(0xFF00CED1).withOpacity(0.5);
+        return const Color(0xFF00CED1).withValues(alpha: 0.5);
       case 'royal':
-        return const Color(0xFFFFD700).withOpacity(0.5);
+        return const Color(0xFFFFD700).withValues(alpha: 0.5);
       default:
-        return AppTheme.darkPurple.withOpacity(0.3);
+        return AppTheme.darkPurple.withValues(alpha: 0.3);
     }
   }
 
@@ -842,7 +842,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFFFF4500)
-                        .withOpacity(0.3 * _specialMilestoneAnimation.value),
+                        .withValues(alpha: 0.3 * _specialMilestoneAnimation.value),
                     blurRadius: 50,
                     spreadRadius: 10,
                   ),
@@ -879,7 +879,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF4169E1)
-                        .withOpacity(0.4 * _specialMilestoneAnimation.value),
+                        .withValues(alpha: 0.4 * _specialMilestoneAnimation.value),
                     blurRadius: 40,
                     spreadRadius: 5,
                   ),
@@ -918,11 +918,11 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                   end: Alignment.bottomRight,
                   colors: [
                     const Color(0xFF00CED1)
-                        .withOpacity(0.2 * _specialMilestoneAnimation.value),
+                        .withValues(alpha: 0.2 * _specialMilestoneAnimation.value),
                     const Color(0xFF9370DB)
-                        .withOpacity(0.2 * _specialMilestoneAnimation.value),
+                        .withValues(alpha: 0.2 * _specialMilestoneAnimation.value),
                     const Color(0xFFFF1493)
-                        .withOpacity(0.2 * _specialMilestoneAnimation.value),
+                        .withValues(alpha: 0.2 * _specialMilestoneAnimation.value),
                   ],
                 ),
               ),
@@ -957,7 +957,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFFFFD700)
-                        .withOpacity(0.5 * _specialMilestoneAnimation.value),
+                        .withValues(alpha: 0.5 * _specialMilestoneAnimation.value),
                     blurRadius: 60,
                     spreadRadius: 15,
                   ),
@@ -1011,7 +1011,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryPurple.withOpacity(0.1),
+                  color: AppTheme.primaryPurple.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.share, color: AppTheme.primaryPurple),
@@ -1031,7 +1031,7 @@ class _NoteSuccessDialogState extends State<NoteSuccessDialog>
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.sageGreen.withOpacity(0.1),
+                  color: AppTheme.sageGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.groups, color: AppTheme.sageGreen),
@@ -1099,8 +1099,9 @@ ${widget.content}
         );
 
         // Close the dialog after successful sharing
-        Navigator.of(context).pop(true); // Return true to indicate success
-        widget.onContinue?.call();
+        if (mounted) {
+          Navigator.of(context).pop(true); // Return true to indicate success
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -1155,14 +1156,14 @@ class FireEffectPainter extends CustomPainter {
         fireColor = const Color(0xFFFFD700); // Gold
       }
 
-      paint.color = fireColor.withOpacity(opacity.clamp(0.0, 0.9));
+      paint.color = fireColor.withValues(alpha: opacity.clamp(0.0, 0.9));
 
       // Draw flame shape instead of circle
       _drawFlame(canvas, Offset(x, y), fireSize, paint);
 
       // Add inner glow
       if (opacity > 0.3) {
-        paint.color = Colors.white.withOpacity(opacity * 0.3);
+        paint.color = Colors.white.withValues(alpha: opacity * 0.3);
         canvas.drawCircle(Offset(x, y), fireSize * 0.3, paint);
       }
     }
@@ -1230,7 +1231,7 @@ class StarfallEffectPainter extends CustomPainter {
       ];
       final colorIndex = i % colors.length;
 
-      paint.color = colors[colorIndex].withOpacity(opacity * 0.95);
+      paint.color = colors[colorIndex].withValues(alpha: opacity * 0.95);
 
       // Draw enhanced star shape
       _drawEnhancedStar(canvas, Offset(x, y), starSize, paint);
@@ -1241,9 +1242,9 @@ class StarfallEffectPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            colors[colorIndex].withOpacity(0.0),
-            colors[colorIndex].withOpacity(opacity * 0.6),
-            colors[colorIndex].withOpacity(opacity * 0.9),
+            colors[colorIndex].withValues(alpha: 0.0),
+            colors[colorIndex].withValues(alpha: opacity * 0.6),
+            colors[colorIndex].withValues(alpha: opacity * 0.9),
           ],
         ).createShader(Rect.fromLTWH(x - 2, y - starSize * 6, 4, starSize * 6))
         ..strokeWidth = 3;
@@ -1285,7 +1286,7 @@ class StarfallEffectPainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Add center glow
-    paint.color = Colors.white.withOpacity(0.8);
+    paint.color = Colors.white.withValues(alpha: 0.8);
     canvas.drawCircle(center, size * 0.2, paint);
   }
 
@@ -1299,7 +1300,7 @@ class StarfallEffectPainter extends CustomPainter {
       final x = center.dx + distance * math.cos(angle);
       final y = center.dy + distance * math.sin(angle);
 
-      paint.color = color.withOpacity(opacity * 0.5);
+      paint.color = color.withValues(alpha: opacity * 0.5);
       canvas.drawCircle(Offset(x, y), 2, paint);
     }
   }
@@ -1348,8 +1349,8 @@ class CrystalEffectPainter extends CustomPainter {
         paint.style = PaintingStyle.fill;
         paint.shader = RadialGradient(
           colors: [
-            colors[colorIndex].withOpacity(opacity * 0.8),
-            colors[colorIndex].withOpacity(opacity * 0.3),
+            colors[colorIndex].withValues(alpha: opacity * 0.8),
+            colors[colorIndex].withValues(alpha: opacity * 0.3),
           ],
         ).createShader(
             Rect.fromCircle(center: Offset(x, y), radius: crystalSize));
@@ -1361,13 +1362,13 @@ class CrystalEffectPainter extends CustomPainter {
         paint.style = PaintingStyle.stroke;
         paint.strokeWidth = 2;
         paint.shader = null;
-        paint.color = colors[colorIndex].withOpacity(opacity);
+        paint.color = colors[colorIndex].withValues(alpha: opacity);
         _drawPrismaticCrystal(
             canvas, Offset(x, y), crystalSize, paint, rotation);
 
         // Add inner light reflection
         paint.style = PaintingStyle.fill;
-        paint.color = Colors.white.withOpacity(opacity * 0.6);
+        paint.color = Colors.white.withValues(alpha: opacity * 0.6);
         canvas.drawCircle(Offset(x, y), crystalSize * 0.3, paint);
       }
     }
@@ -1378,9 +1379,9 @@ class CrystalEffectPainter extends CustomPainter {
 
     centralPaint.shader = RadialGradient(
       colors: [
-        Colors.white.withOpacity(animationValue * 0.9),
-        const Color(0xFF00CED1).withOpacity(animationValue * 0.6),
-        const Color(0xFF9370DB).withOpacity(animationValue * 0.3),
+        Colors.white.withValues(alpha: animationValue * 0.9),
+        const Color(0xFF00CED1).withValues(alpha: animationValue * 0.6),
+        const Color(0xFF9370DB).withValues(alpha: animationValue * 0.3),
       ],
     ).createShader(Rect.fromCircle(center: center, radius: centralRadius));
 
@@ -1398,8 +1399,8 @@ class CrystalEffectPainter extends CustomPainter {
       final linePaint = Paint()
         ..shader = LinearGradient(
           colors: [
-            Colors.white.withOpacity(animationValue * 0.8),
-            const Color(0xFF00CED1).withOpacity(animationValue * 0.3),
+            Colors.white.withValues(alpha: animationValue * 0.8),
+            const Color(0xFF00CED1).withValues(alpha: animationValue * 0.3),
             Colors.transparent,
           ],
         ).createShader(
@@ -1465,7 +1466,7 @@ class RoyalEffectPainter extends CustomPainter {
       ];
       final colorIndex = i % goldColors.length;
 
-      paint.color = goldColors[colorIndex].withOpacity(opacity * 0.8);
+      paint.color = goldColors[colorIndex].withValues(alpha: opacity * 0.8);
 
       // Draw teardrop shape for golden drops
       _drawGoldenDrop(canvas, Offset(x, y), dropSize, paint);
@@ -1502,7 +1503,7 @@ class RoyalEffectPainter extends CustomPainter {
       ];
       final sparkleColor = sparkleColors[i % sparkleColors.length];
 
-      paint.color = sparkleColor.withOpacity(sparkleOpacity * crownOpacity);
+      paint.color = sparkleColor.withValues(alpha: sparkleOpacity * crownOpacity);
       _drawRoyalSparkle(canvas, Offset(x, y), sparkleSize, paint);
     }
 
@@ -1548,9 +1549,9 @@ class RoyalEffectPainter extends CustomPainter {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        const Color(0xFFFFD700).withOpacity(opacity),
-        const Color(0xFFFFA500).withOpacity(opacity * 0.8),
-        const Color(0xFFDAA520).withOpacity(opacity * 0.6),
+        const Color(0xFFFFD700).withValues(alpha: opacity),
+        const Color(0xFFFFA500).withValues(alpha: opacity * 0.8),
+        const Color(0xFFDAA520).withValues(alpha: opacity * 0.6),
       ],
     ).createShader(
         Rect.fromCenter(center: center, width: size * 2, height: size * 1.5));
@@ -1577,12 +1578,12 @@ class RoyalEffectPainter extends CustomPainter {
     final gemPaint = Paint()..style = PaintingStyle.fill;
 
     // Center ruby
-    gemPaint.color = const Color(0xFFDC143C).withOpacity(opacity);
+    gemPaint.color = const Color(0xFFDC143C).withValues(alpha: opacity);
     canvas.drawCircle(
         Offset(center.dx, center.dy - height * 0.3), size * 0.15, gemPaint);
 
     // Side emeralds
-    gemPaint.color = const Color(0xFF50C878).withOpacity(opacity);
+    gemPaint.color = const Color(0xFF50C878).withValues(alpha: opacity);
     canvas.drawCircle(
         Offset(center.dx - width * 0.15, center.dy), size * 0.1, gemPaint);
     canvas.drawCircle(
@@ -1590,7 +1591,7 @@ class RoyalEffectPainter extends CustomPainter {
 
     // Crown base decoration
     final basePaint = Paint()
-      ..color = const Color(0xFFFFD700).withOpacity(opacity * 0.7)
+      ..color = const Color(0xFFFFD700).withValues(alpha: opacity * 0.7)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3;
 
@@ -1635,8 +1636,8 @@ class RoyalEffectPainter extends CustomPainter {
 
       rayPaint.shader = LinearGradient(
         colors: [
-          const Color(0xFFFFD700).withOpacity(opacity * 0.8),
-          const Color(0xFFFFD700).withOpacity(0.0),
+          const Color(0xFFFFD700).withValues(alpha: opacity * 0.8),
+          const Color(0xFFFFD700).withValues(alpha: 0.0),
         ],
       ).createShader(
           Rect.fromPoints(Offset(startX, startY), Offset(endX, endY)));

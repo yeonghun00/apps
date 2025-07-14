@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "firebase deploy --only functions": "grace-notes-98ebe"
+  },
+  "targets": {},
+  "etags": {}
+}

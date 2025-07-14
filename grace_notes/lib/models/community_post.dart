@@ -111,7 +111,7 @@ class CommunityPost {
   String get categoryDisplayName {
     switch (category) {
       case PostCategory.faithSharing:
-        return '신앙나눔';
+        return '자유나눔';
       case PostCategory.devotionSharing:
         return '큐티나눔';
       case PostCategory.sermonSharing:

@@ -199,7 +199,7 @@ class _ImprovedBibleSelectorState extends State<ImprovedBibleSelector>
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppTheme.darkPurple.withOpacity(0.2)),
+                    border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.2)),
                     borderRadius: BorderRadius.circular(12),
                     color: AppTheme.white,
                   ),
@@ -209,7 +209,7 @@ class _ImprovedBibleSelectorState extends State<ImprovedBibleSelector>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppTheme.darkPurple.withOpacity(0.1),
+                          color: AppTheme.darkPurple.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -327,7 +327,7 @@ class _ImprovedBibleSelectorState extends State<ImprovedBibleSelector>
                         color: isSelected ? AppTheme.darkPurple : AppTheme.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: isSelected ? AppTheme.darkPurple : AppTheme.softGray.withOpacity(0.3),
+                          color: isSelected ? AppTheme.darkPurple : AppTheme.softGray.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Center(

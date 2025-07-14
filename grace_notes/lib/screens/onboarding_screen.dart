@@ -91,8 +91,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             end: Alignment.bottomRight,
             colors: [
               AppTheme.ivory,
-              AppTheme.cream.withOpacity(0.8),
-              AppTheme.lavender.withOpacity(0.2),
+              AppTheme.cream.withValues(alpha: 0.8),
+              AppTheme.lavender.withValues(alpha: 0.2),
             ],
           ),
         ),
@@ -141,7 +141,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: page.iconGradient.first.withOpacity(0.3),
+                  color: page.iconGradient.first.withValues(alpha: 0.3),
                   blurRadius: 30,
                   offset: const Offset(0, 15),
                 ),
@@ -179,7 +179,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppTheme.textDark.withOpacity(0.8),
+                    color: AppTheme.textDark.withValues(alpha: 0.8),
                     height: 1.6,
                     fontWeight: FontWeight.w500,
                   ),
@@ -219,7 +219,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 decoration: BoxDecoration(
                   color: _currentIndex == index
                       ? AppTheme.primaryPurple
-                      : AppTheme.primaryPurple.withOpacity(0.3),
+                      : AppTheme.primaryPurple.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -241,8 +241,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryPurple,
-                      side: const BorderSide(color: AppTheme.primaryPurple),
+                      foregroundColor: AppTheme.deepLavender,
+                      side: BorderSide(color: AppTheme.deepLavender, width: 1.5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -272,13 +272,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryPurple,
+                    backgroundColor: AppTheme.deepLavender,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    elevation: 0,
+                    elevation: 4,
+                    shadowColor: AppTheme.deepLavender.withValues(alpha: 0.2),
                   ),
                   child: Text(
                     _currentIndex == _pages.length - 1 ? '시작하기' : '다음',
@@ -302,7 +303,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     '건너뛰기',
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppTheme.textDark.withOpacity(0.6),
+                      color: AppTheme.textDark.withValues(alpha: 0.6),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

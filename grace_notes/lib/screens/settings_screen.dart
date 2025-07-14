@@ -4,6 +4,7 @@ import '../constants/app_theme.dart';
 import '../services/storage_service.dart';
 import '../services/auth_service.dart';
 import '../services/firebase_community_service.dart';
+import '../services/notification_service.dart';
 import 'auth/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _usernameController = TextEditingController();
   bool _isLoading = false;
   String _currentUserEmail = '';
+  bool _notificationsEnabled = true;
 
   @override
   void initState() {
@@ -38,8 +40,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _churchController.text = settings['defaultChurch'] ?? '';
         _preacherController.text = settings['defaultPreacher'] ?? '';
-        _usernameController.text = user?.displayName ?? '';
+        // Load username from Firebase Auth if signed in, otherwise from local settings
+        _usernameController.text = user?.displayName ?? settings['username'] ?? '';
         _currentUserEmail = user?.email ?? '';
+        _notificationsEnabled = settings['notificationsEnabled'] ?? true;
       });
     } catch (e) {
       print('Error loading settings: $e');
@@ -56,20 +60,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     try {
-      // Save app settings
+      // Get current settings first
+      final currentSettings = await StorageService.getSettings();
+      
+      // Save app settings including username
       final settings = {
+        ...currentSettings,
         'defaultChurch': _churchController.text,
         'defaultPreacher': _preacherController.text,
+        'username': _usernameController.text.trim(),
+        'notificationsEnabled': _notificationsEnabled,
       };
       await StorageService.saveSettings(settings);
 
-      // Update username if changed
+      // Update username in Firebase Auth if user is signed in and username changed
       final currentUser = AuthService.currentUser;
       if (currentUser != null &&
           _usernameController.text.trim().isNotEmpty &&
           _usernameController.text.trim() != currentUser.displayName) {
         await AuthService.updateDisplayName(_usernameController.text.trim());
       }
+
+      // Update notification service
+      await NotificationService.setNotificationsEnabled(_notificationsEnabled);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -136,6 +149,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             _buildProfileSection(),
             const SizedBox(height: 24),
+            _buildNotificationSection(),
+            const SizedBox(height: 24),
             _buildDefaultsSection(),
             const SizedBox(height: 24),
             _buildAboutSection(),
@@ -196,6 +211,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: AppTheme.cardDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '알림 설정',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            '댓글 알림을 받을지 설정할 수 있습니다.',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppTheme.softGray,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            title: const Text(
+              '댓글 알림',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textDark,
+              ),
+            ),
+            subtitle: const Text(
+              '내 게시글에 댓글이 달렸을 때 알림을 받습니다',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppTheme.softGray,
+              ),
+            ),
+            value: _notificationsEnabled,
+            activeColor: AppTheme.primaryPurple,
+            onChanged: (bool value) {
+              setState(() {
+                _notificationsEnabled = value;
+              });
+            },
+            contentPadding: EdgeInsets.zero,
+          ),
         ],
       ),
     );

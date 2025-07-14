@@ -200,7 +200,7 @@ class _CalendarScreenState extends State<CalendarScreen>
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
-            color: AppTheme.sageGreen.withOpacity(0.6),
+            color: AppTheme.sageGreen.withValues(alpha: 0.6),
             shape: BoxShape.circle,
           ),
           markersMaxCount: 3,
@@ -281,15 +281,22 @@ class _CalendarScreenState extends State<CalendarScreen>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppTheme.lavender.withOpacity(0.3),
-                AppTheme.cream.withOpacity(0.6),
+                AppTheme.lavender.withValues(alpha: 0.15),
+                AppTheme.cream.withValues(alpha: 0.3),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: AppTheme.lavender.withOpacity(0.3),
-              width: 1,
+              color: AppTheme.lavender.withValues(alpha: 0.4),
+              width: 1.5,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.lavender.withValues(alpha: 0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -297,13 +304,13 @@ class _CalendarScreenState extends State<CalendarScreen>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.lavender.withOpacity(0.2),
+                  color: AppTheme.lavender.withValues(alpha: 0.3),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.calendar_today,
                   size: 32,
-                  color: AppTheme.primaryPurple,
+                  color: AppTheme.lavender,
                 ),
               ),
               const SizedBox(height: 16),
@@ -328,7 +335,7 @@ class _CalendarScreenState extends State<CalendarScreen>
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: () async {
                         final result = await Navigator.push(
                           context,
@@ -340,24 +347,29 @@ class _CalendarScreenState extends State<CalendarScreen>
                           _loadNotes(); // Refresh calendar data
                         }
                       },
-                      icon: const Icon(Icons.church, size: 16),
+                      icon: const Icon(Icons.church, size: 18),
                       label: const Text(
                         '설교노트',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.primaryPurple,
-                        side: const BorderSide(color: AppTheme.primaryPurple),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.lavender,
+                        foregroundColor: Colors.white,
+                        elevation: 4,
+                        shadowColor: AppTheme.lavender.withValues(alpha: 0.4),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: () async {
                         final result = await Navigator.push(
                           context,
@@ -370,17 +382,22 @@ class _CalendarScreenState extends State<CalendarScreen>
                           _loadNotes(); // Refresh calendar data
                         }
                       },
-                      icon: const Icon(Icons.auto_stories, size: 16),
+                      icon: const Icon(Icons.auto_stories, size: 18),
                       label: const Text(
                         '큐티노트',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.sageGreen,
-                        side: const BorderSide(color: AppTheme.sageGreen),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.sageGreen,
+                        foregroundColor: Colors.white,
+                        elevation: 4,
+                        shadowColor: AppTheme.sageGreen.withValues(alpha: 0.4),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
@@ -438,7 +455,7 @@ class _CalendarScreenState extends State<CalendarScreen>
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryPurple.withOpacity(0.2),
+                      color: AppTheme.primaryPurple.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -486,7 +503,7 @@ class _CalendarScreenState extends State<CalendarScreen>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.sageGreen.withOpacity(0.2),
+                    color: AppTheme.sageGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -546,7 +563,7 @@ class _CalendarScreenState extends State<CalendarScreen>
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppTheme.sageGreen.withOpacity(0.2),
+                      color: AppTheme.sageGreen.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -598,7 +615,7 @@ class _CalendarScreenState extends State<CalendarScreen>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.sageGreen.withOpacity(0.2),
+                    color: AppTheme.sageGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

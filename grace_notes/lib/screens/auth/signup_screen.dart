@@ -62,8 +62,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.sageGreen.withOpacity(0.9),
-                      AppTheme.mint.withOpacity(0.8),
+                      AppTheme.sageGreen.withValues(alpha: 0.9),
+                      AppTheme.mint.withValues(alpha: 0.8),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
@@ -90,7 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       '함께 기도하고 은혜를 나누는 공간입니다',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.white.withOpacity(0.9),
+                        color: AppTheme.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],

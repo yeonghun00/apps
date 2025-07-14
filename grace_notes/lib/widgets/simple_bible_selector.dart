@@ -111,7 +111,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.darkPurple.withOpacity(0.3)),
+                border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.3)),
                 borderRadius: BorderRadius.circular(8),
                 color: AppTheme.white,
               ),
@@ -142,7 +142,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
               height: 200,
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.darkPurple.withOpacity(0.2)),
+                border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.2)),
                 borderRadius: BorderRadius.circular(8),
                 color: AppTheme.cream,
               ),
@@ -185,7 +185,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             margin: const EdgeInsets.only(bottom: 2),
                             decoration: BoxDecoration(
-                              color: _selectedBook == bookName ? AppTheme.darkPurple.withOpacity(0.1) : null,
+                              color: _selectedBook == bookName ? AppTheme.darkPurple.withValues(alpha: 0.1) : null,
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -277,10 +277,10 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: _showMultipleQuotes ? AppTheme.darkPurple.withOpacity(0.1) : AppTheme.cream,
+                  color: _showMultipleQuotes ? AppTheme.darkPurple.withValues(alpha: 0.1) : AppTheme.cream,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: _showMultipleQuotes ? AppTheme.darkPurple : AppTheme.softGray.withOpacity(0.3),
+                    color: _showMultipleQuotes ? AppTheme.darkPurple : AppTheme.softGray.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(
@@ -312,7 +312,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
                 decoration: BoxDecoration(
                   color: AppTheme.cream,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppTheme.darkPurple.withOpacity(0.2)),
+                  border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.2)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,7 +346,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
                       icon: const Icon(Icons.add, size: 16),
                       label: const Text('구절 더하기', style: TextStyle(fontSize: 12)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.darkPurple.withOpacity(0.1),
+                        backgroundColor: AppTheme.darkPurple.withValues(alpha: 0.1),
                         foregroundColor: AppTheme.darkPurple,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         minimumSize: const Size(0, 32),
@@ -369,10 +369,10 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: _showDirectInput ? AppTheme.darkPurple.withOpacity(0.1) : AppTheme.cream,
+                color: _showDirectInput ? AppTheme.darkPurple.withValues(alpha: 0.1) : AppTheme.cream,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: _showDirectInput ? AppTheme.darkPurple : AppTheme.softGray.withOpacity(0.3),
+                  color: _showDirectInput ? AppTheme.darkPurple : AppTheme.softGray.withValues(alpha: 0.3),
                 ),
               ),
               child: Row(
@@ -514,7 +514,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
       decoration: BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.darkPurple.withOpacity(0.3)),
+        border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,7 +552,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.darkPurple.withOpacity(0.3)),
+                border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.3)),
                 borderRadius: BorderRadius.circular(6),
                 color: AppTheme.cream,
               ),
@@ -584,7 +584,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
               height: 120,
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.darkPurple.withOpacity(0.2)),
+                border: Border.all(color: AppTheme.darkPurple.withValues(alpha: 0.2)),
                 borderRadius: BorderRadius.circular(6),
                 color: AppTheme.cream,
               ),
@@ -603,7 +603,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       margin: const EdgeInsets.only(bottom: 1),
                       decoration: BoxDecoration(
-                        color: quote['selectedBook'] == bookName ? AppTheme.darkPurple.withOpacity(0.1) : null,
+                        color: quote['selectedBook'] == bookName ? AppTheme.darkPurple.withValues(alpha: 0.1) : null,
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Text(
@@ -693,7 +693,7 @@ class _SimpleBibleSelectorState extends State<SimpleBibleSelector> {
             decoration: BoxDecoration(
               color: AppTheme.cream,
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppTheme.softGray.withOpacity(0.3)),
+              border: Border.all(color: AppTheme.softGray.withValues(alpha: 0.3)),
             ),
             child: Text(
               quote['text'] ?? '성경 본문을 직접 입력해주세요.',
